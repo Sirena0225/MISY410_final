@@ -13,6 +13,7 @@ from flask import Flask
 # Inject Flask magic
 app = Flask(__name__)
 
+app.secret_key = '12345678asdfghjk'
 
 # Import routing to render the pages
 from app import views
