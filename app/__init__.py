@@ -15,5 +15,16 @@ app = Flask(__name__)
 
 app.secret_key = '12345678asdfghjk'
 
+dbConn = pymysql.connect(
+    host='116.62.160.40',
+    user='misy410group05',
+    password='@m8Wa9jHYORG3hoD7',
+    database='misy4110group05',
+    port=3306,
+    cursorclass=pymysql.cursors.DictCursor
+)
+
+cursor = dbConn.cursor()
+
 # Import routing to render the pages
 from app import views
