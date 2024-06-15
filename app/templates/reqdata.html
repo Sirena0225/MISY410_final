@@ -1,0 +1,17 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<form  method="post" action="/requestGraph">
+    <label for="">Please choose a Merchant Address:
+        <select name="addr" id="Address">
+            <!-- generate option elements based on read supplier IDs -->
+            {% for req in requests %}
+                <option value="{{ req['Address'] }}">{{ req['Address'] }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <br>
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock content %}

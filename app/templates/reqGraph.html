@@ -1,0 +1,41 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+    <!-- Step 1 - Include the fusioncharts core library -->
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+    <!-- Step 2 - Include the fusion theme -->
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.gammel.js"></script>
+    <script>
+        // Receive Data from views.py
+        var importedData = JSON.parse({{ orders | tojson | safe }});
+
+
+        // code copied from FusionChart Example
+        const dataSource = {
+            chart: {
+              caption: "Total Orders of Each Merchant",
+              xaxisname: "Merchant (or its address)",
+              yaxisname: "Total Orders",
+              theme: "gammel"
+            },
+            data: importedData
+          };
+          
+          FusionCharts.ready(function() {
+            var myChart = new FusionCharts({
+              type: "column2d",
+              renderAt: "chart-container",
+              width: "100%",
+              height: "100%",
+              dataFormat: "json",
+              dataSource
+            }).render();
+          });
+          
+
+    </script>
+
+    <div id="chart-container"></div>
+
+
+{% endblock %}

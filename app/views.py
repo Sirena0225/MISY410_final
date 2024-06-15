@@ -63,6 +63,42 @@ def requestsubmit():
         return render_template('req-success.html')
 
 
+
+@app.route('/myrequest')
+def myrequest():
+    return render_template('myrequest.html')
+
+
+@app.route('/data')
+def data():
+    return render_template('data.html')
+
+
+@app.route('/dataRequest')
+def dataRequest():
+    # retrieve a list of supplier IDs from the database and pass then to the page
+    sql = "select Address from Requests"
+    cursor.execute(sql)
+    req = cursor.fetchall()
+    return render_template('reqdata.html', requests=req)
+
+
+@app.route('/requestGraph', methods=['POST'])
+def requestGraph():
+    # retrieve the supplier ID from the form post data
+    addr = request.form.get('addr')
+
+    # get product names and total in-stock values for the products supplied by the selected supplier
+    if addr:
+        sql = "select Address as Merchant, count(*) as Total_Orders from Requests where Address = %s GROUP BY Address"
+        cursor.execute(sql, (addr))
+        orders = cursor.fetchall()
+        chartData = json.dumps(orders)
+
+    # pass the data to the graph page
+    return render_template('reqGraph.html', orders=chartData)
+
+
 @app.route('/about')
 def about():
     return render_template('about.html')
