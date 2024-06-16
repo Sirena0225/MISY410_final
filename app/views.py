@@ -17,6 +17,51 @@ from app import app, dbConn, cursor
 def index():
     return render_template('index.html')
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/loginsumbit')
+def loginsumbit():
+    email = request.form['email']
+    password = request.form['password']
+    cursor.execute("SELECT * FROM Userprofile WHERE email = %s AND password = %s", (email, password))
+    result = cursor.fetchall()
+    cursor.execute("SELECT * FROM Userprofile WHERE email = %s", email)
+    result_findaccount = cursor.fetchall()
+    error = False
+    if not result_findaccount:
+        error = True
+        flash('Your account is not existed!')
+
+    if not result:
+        error = True
+        flash('The entered password is incorrect!')
+    
+    if result:
+        flash('Login Success!')
+        render_template('index.html')
+
+    if error:
+        return render_template('login.html', email=email, password=password)
+      
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
+@app.route('/registersumbit', methods=['POST'])
+def registersumbit():
+    firstname = request.form['first_name']
+    lastname = request.form['last_name']
+    email = request.form['email']
+    password = request.form['password']
+    sql = "INSERT INTO Userprofile (first_name, last_name, email, password) VALUES (%s, %s, %s, %s)"
+    print(cursor.mogrify(sql,(firstname, lastname, email, password)))
+    cursor.execute(sql, (firstname, lastname, email, password))
+    flash('New user added successfully')
+    return render_template('login.html')
+
 @app.route('/requestSubmit', methods=['POST'])
 def requestsubmit():
     # get the info from post data
