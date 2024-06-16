@@ -56,7 +56,7 @@ def registersumbit():
     lastname = request.form['last_name']
     email = request.form['email']
     password = request.form['password']
-    sql = "INSERT INTO Userprofile (first_name, last_name, email, password) VALUES (%s, %s, %s, %s)"
+    sql = "INSERT INTO Userprofile (first_name, last_name, email, password) values(%s, %s, %s, %s)"
     print(cursor.mogrify(sql,(firstname, lastname, email, password)))
     cursor.execute(sql, (firstname, lastname, email, password))
     flash('New user added successfully')
