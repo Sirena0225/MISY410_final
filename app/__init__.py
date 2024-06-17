@@ -22,7 +22,6 @@ dbConn = pymysql.connect(
     database='misy4110group05',
     autocommit=True,
     port=3306,
-    autocommit=True,
     cursorclass=pymysql.cursors.DictCursor
 )
 
