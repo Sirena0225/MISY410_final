@@ -22,7 +22,7 @@ def index():
 def login():
     return render_template('login.html')
 
-@app.route('/loginsumbit')
+@app.route('/loginsumbit', methods=['POST'])
 def loginsumbit():
     email = request.form['email']
     password = request.form['password']
@@ -31,6 +31,7 @@ def loginsumbit():
     cursor.execute("SELECT * FROM Userprofile WHERE email = %s", email)
     result_findaccount = cursor.fetchall()
     error = False
+
     if not result_findaccount:
         error = True
         flash('Your account is not existed!')
@@ -41,7 +42,7 @@ def loginsumbit():
     
     if result:
         flash('Login Success!')
-        render_template('index.html')
+        return render_template('index.html')
 
     if error:
         return render_template('login.html', email=email, password=password)
@@ -69,8 +70,14 @@ def registersumbit():
     flash('New user added successfully')
     return render_template('login.html')
 
+
 @app.route('/profile')
 def profile():
+    return render_template('profile2.html')
+
+
+@app.route('/userportrait')
+def userportrait():
     sql = ''' 
     SELECT 
     CASE
@@ -94,7 +101,7 @@ def profile():
     ageinfo = cursor.fetchall()
     chart_data = json.dumps(ageinfo)
 
-    return render_template('profile2.html', chart_data=chart_data)
+    return render_template('userportrait.html', chart_data=chart_data)
 
 @app.route('/changepassword', methods=['POST'])
 def changepassword():
@@ -138,16 +145,13 @@ def completeinfo():
         error = True
         flash('Country is required')
     if error:
-        return render_template('profile.html', email=email, address=address,age=age,city=city,country=country)
+        return render_template('profile2.html', email=email, address=address, age=age, city=city, country=country)
     
-
-
     sql = "UPDATE Userprofile SET address=%s, age=%s, city=%s, country=%s WHERE email=%s"
     print(cursor.mogrify(sql, (address, age, city, country, email)))
     cursor.execute(sql, (address, age, city, country, email))
     flash('Your info is added successfully')
-    
-    return render_template('profile2.html')
+    return render_template('profile2.html', email=email, address=address, age=age, city=city, country=country )
 
 
 @app.route('/requestSubmit', methods=['POST'])
