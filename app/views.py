@@ -16,7 +16,7 @@ from app import app, dbConn, cursor
 # App main route + generic routing
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('login.html')
 
 @app.route('/login')
 def login():
