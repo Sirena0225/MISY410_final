@@ -116,6 +116,9 @@ def userportrait():
 
     return render_template('userportrait.html', chart_data=chart_data, gender_data = gender_data)
 
+
+
+
 @app.route('/changepassword', methods=['POST'])
 def changepassword():
     newpassword = request.form['newpassword']
@@ -169,6 +172,24 @@ def completeinfo():
     cursor.execute(sql, (address, age, city, country, gender, email))
     flash('Your info is added successfully')
     return render_template('profile2.html', email=email, address=address, age=age, city=city, country=country, gender= gender)
+
+
+
+@app.route('/deleteinfo', methods=['POST'])
+def deleteinfo():
+    email = session.get('email')
+    sql='''UPDATE Userprofile
+    SET address= NULL, gender = NULL, age = NULL, city = NULL, country = NULL
+    WHERE email = %s;'''
+    print(cursor.mogrify(sql, email))
+    cursor.execute(sql, email)
+    flash('Delete successfully')
+    return render_template('profile2.html')
+
+
+
+    
+
 
 
 @app.route('/requestSubmit', methods=['POST'])
