@@ -41,6 +41,7 @@ def loginsumbit():
         flash('The entered password is incorrect!')
     
     if result:
+        session['email'] = email
         flash('Login Success!')
         return render_template('index.html')
 
@@ -208,11 +209,11 @@ def requestsubmit():
 
 @app.route('/myrequest')
 def myrequest():
-    email = '123@qq.com'# session.get('email')
+    email = session['email'] # '123@qq.com'
 
     if email:
         sql = "select * from Request where email = %s"
-        cursor.execute( sql, (email))
+        cursor.execute( sql, (session['email']))
         requests = cursor.fetchall()
 
     return render_template('myrequest.html', requests=requests)
