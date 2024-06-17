@@ -1,0 +1,31 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<table class="table table-striped" name="acceptance" id="acceptance">
+    <thead>
+        <tr>
+            <th>Raid</th>
+            <th>Rid</th>
+            <th>Email</th>
+            <th>AcceptanceTime</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if Acceptances %}
+            {% for acce in Acceptances %}
+                <tr>
+                    <form method="post" action="/acceDelete">
+                        <td>{{ acce['raid']}}</td>
+                        <td>{{ acce['Request_rid'] }}</td>
+                        <td>{{ acce['Userprofile_email'] }}</td>
+                        <td>{{ acce['AcceptanceTime'] }}</td>
+                        <td>
+                            <input type="hidden" name="raid" value="{{ acce['raid'] }}">
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </td>
+                    </form>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+{% endblock content %}
