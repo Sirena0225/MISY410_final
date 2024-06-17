@@ -20,7 +20,6 @@ dbConn = pymysql.connect(
     user='misy410group05',
     password='@m8Wa9jHYORG3hoD7',
     database='misy4110group05',
-    autocommit=True,
     port=3306,
     autocommit=True,    
     cursorclass=pymysql.cursors.DictCursor
