@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 # Flask modules
-from flask   import render_template, request, redirect, url_for, flash, json
+from flask   import render_template, request, redirect, url_for, flash, json, session
 from jinja2  import TemplateNotFound
 from datetime import datetime
 import random
@@ -22,7 +22,7 @@ def index():
 def login():
     return render_template('login.html')
 
-@app.route('/loginsumbit')
+@app.route('/loginsumbit', methods=['POST'])
 def loginsumbit():
     email = request.form['email']
     password = request.form['password']
@@ -31,6 +31,7 @@ def loginsumbit():
     cursor.execute("SELECT * FROM Userprofile WHERE email = %s", email)
     result_findaccount = cursor.fetchall()
     error = False
+
     if not result_findaccount:
         error = True
         flash('Your account is not existed!')
@@ -40,8 +41,10 @@ def loginsumbit():
         flash('The entered password is incorrect!')
     
     if result:
+        session['email'] = email
+        login = True
         flash('Login Success!')
-        render_template('index.html')
+        return render_template('index.html', login=login)
 
     if error:
         return render_template('login.html', email=email, password=password)
@@ -57,6 +60,12 @@ def registersumbit():
     lastname = request.form['last_name']
     email = request.form['email']
     password = request.form['password']
+
+    session['first_name'] = firstname
+    session['last_name'] = lastname
+    session['email'] = email
+    session['password'] = password
+
     sql = "INSERT INTO Userprofile (first_name, last_name, email, password) values(%s, %s, %s, %s)"
     print(cursor.mogrify(sql,(firstname, lastname, email, password)))
     cursor.execute(sql, (firstname, lastname, email, password))
@@ -64,43 +73,114 @@ def registersumbit():
     return render_template('login.html')
 
 
-
 @app.route('/profile')
 def profile():
+    return render_template('profile2.html')
+
+
+@app.route('/userportrait')
+def userportrait():
     sql = ''' 
     SELECT 
     CASE
-        WHEN age < 16 THEN '<16'
-        WHEN age BETWEEN 16 AND 25 THEN '16~25'
-        WHEN age BETWEEN 26 AND 40 THEN '25~40'
-        ELSE '>40'
-      END AS label,
-      COUNT(*) AS value
+    WHEN age < 16 THEN '<16'
+    WHEN age BETWEEN 16 AND 25 THEN '16~25'
+    WHEN age BETWEEN 26 AND 40 THEN '25~40'
+    ELSE '>40'
+    END AS label,
+    COUNT(*) AS value
     FROM
-      Userprofile
+    Userprofile
     GROUP BY
-      CASE
-        WHEN age < 16 THEN '<16'
-        WHEN age BETWEEN 16 AND 25 THEN '16~25'
-        WHEN age BETWEEN 26 AND 40 THEN '25~40'
-        ELSE '>40'
-      END '''
+    CASE
+    WHEN age < 16 THEN '<16'
+    WHEN age BETWEEN 16 AND 25 THEN '16~25'
+    WHEN age BETWEEN 26 AND 40 THEN '25~40'
+    ELSE '>40'
+    END '''
     cursor.execute(sql)
     print(cursor.mogrify(sql))
     ageinfo = cursor.fetchall()
     chart_data = json.dumps(ageinfo)
 
-    return render_template('profile.html', chart_data=chart_data)
+
+    sqll = '''SELECT gender as label, COUNT(*) AS value
+            FROM Userprofile
+            WHERE gender IS NOT NULL
+            GROUP BY gender;'''
+    cursor.execute(sqll)
+    print(cursor.mogrify(sqll))
+    genderinfo = cursor.fetchall()
+    gender_data = json.dumps(genderinfo)
+
+
+    return render_template('userportrait.html', chart_data=chart_data, gender_data = gender_data)
+
+@app.route('/changepassword', methods=['POST'])
+def changepassword():
+    newpassword = request.form['newpassword']
+    email = session.get('email')
+    oldpassword = session.get('password')
+    if newpassword == oldpassword:
+        flash('The password is same as the preview one!')
+    if newpassword != oldpassword:
+        sql = 'UPDATE Userprofile SET password=%s WHERE email=%s'
+        print(cursor.mogrify(sql, (newpassword, email)))
+        cursor.execute(sql, (newpassword, email))
+        flash('New password updated successfully')
+    if not newpassword or newpassword =='':
+        return render_template('profile2.html')
+    
+    return render_template('profile2.html')
+
+
+@app.route('/completeinfo', methods=['POST'])
+def completeinfo():
+    email = session.get('email')
+    address = request.form['address']
+    age = request.form['age']
+    city = request.form['city']
+    country = request.form['country']
+    gender = request.form['gender']
+    error = False
+    if not email or email == '':
+        error = True
+        flash('Email is required')
+    if not address or address == '':
+        error = True
+        flash('Address is required')
+    if not age or age == '':
+        error = True
+        flash('Age is required')
+    if not city or city == '':
+        error = True
+        flash('City is required')
+    if not country or country == '':
+        error = True
+        flash('Country is required')
+    if not gender:
+        error = True
+        flash('Gender is required')
+    if error:
+        return render_template('profile2.html', email=email, address=address, age=age, city=city, country=country, gender=gender)
+
+    sql = "UPDATE Userprofile SET address=%s, age=%s, city=%s, country=%s, gender= %s WHERE email=%s"
+    print(cursor.mogrify(sql, (address, age, city, country, gender, email)))
+    cursor.execute(sql, (address, age, city, country, gender, email))
+    flash('Your info is added successfully')
+    return render_template('profile2.html', email=email, address=address, age=age, city=city, country=country, gender= gender)
+
 
 @app.route('/requestSubmit', methods=['POST'])
 def requestsubmit():
     # get the info from post data
     date = datetime.now()
+    rid = request.form['rid']
     item = request.form['item']
     addr = request.form['address']
     budg = request.form['budget']
     rewd = request.form['reward']
-    phone = request.form['phone']
+    email = request.form['email']
     time = request.form['time']
     error = False
     
@@ -120,9 +200,9 @@ def requestsubmit():
         error = True
         flash('Reward is required')
 
-    if not phone or phone=="":
+    if not email or email=="":
         error = True
-        flash('Phone number is required')
+        flash('Email is required')
 
     if not time or time=="":
         error = True
@@ -131,20 +211,41 @@ def requestsubmit():
 
     if error:
         # return to the form page
-        return render_template('index.html', item=item, addr=addr, budg=budg, rewd=rewd, phone=phone, time=time)
+        return render_template('index.html', item=item, addr=addr, budg=budg, rewd=rewd, email=email, time=time)
     else:
-        sql = "INSERT INTO Request (RequestTime, RequestContent, Address, Budget, Reward, PhoneNumber, DeliveryTime) values(%s, %s, %s, %s, %s, %s, %s)"
-        cursor.execute(sql, (date, item, addr, float(budg), float(rewd), phone, time))
-        return render_template('req-success.html')
-
-
-
-
+        if not rid or rid=="":
+            sql = "INSERT INTO Request (RequestTime, RequestContent, Address, Budget, Reward, Email, DeliveryTime) values(%s, %s, %s, %s, %s, %s, %s)"
+            cursor.execute(sql, (date, item, addr, float(budg), float(rewd), email, time))
+            return render_template('req-success.html')
+        else: 
+            sql = "UPDATE Request SET RequestContent = %s, Address = %s, Budget = %s, Reward = %s, Email = %s, DeliveryTime = %s WHERE rid = %s"
+            cursor.execute(sql, (item, addr, float(budg), float(rewd), email, time, int(rid)))
+            return render_template('req-success.html')
 
 
 @app.route('/myrequest')
 def myrequest():
-    return render_template('myrequest.html')
+    email = session['email']
+
+    if email:
+        sql = "select * from Request where email = %s"
+        cursor.execute( sql, (session['email']))
+        requests = cursor.fetchall()
+
+    return render_template('myrequest.html', requests=requests)
+
+
+@app.route("/reqDelete", methods=['POST'])
+def reqdelete():
+    rid = request.form.get('rid')
+    if rid:
+        sql = "DELETE FROM Request WHERE rid = %s"
+        cursor.execute(sql,(int(rid)))
+        sql = "select * from Request WHERE email = %s"
+        cursor.execute( sql, (session['email']))
+        requests = cursor.fetchall()
+        return render_template('myrequest.html', requests=requests)
+
 
 
 @app.route('/data')
@@ -155,7 +256,7 @@ def data():
 @app.route('/dataRequest')
 def dataRequest():
     # retrieve a list of supplier IDs from the database and pass then to the page
-    sql = "select Address from Requests"
+    sql = "select DISTINCT Address from Request"
     cursor.execute(sql)
     req = cursor.fetchall()
     return render_template('reqdata.html', requests=req)
@@ -168,7 +269,7 @@ def requestGraph():
 
     # get product names and total in-stock values for the products supplied by the selected supplier
     if addr:
-        sql = "select Address as Merchant, count(*) as Total_Orders from Requests where Address = %s GROUP BY Address"
+        sql = "select RequestContent as label, count(*) as value from Request where Address = %s GROUP BY RequestContent"
         cursor.execute(sql, (addr))
         orders = cursor.fetchall()
         chartData = json.dumps(orders)

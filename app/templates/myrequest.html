@@ -1,5 +1,6 @@
 {% extends "layouts/base.html" %}
 {% block title %} My Request {% endblock title %} 
+
 {% block content %}
     <div>
         <div class="container">
@@ -7,65 +8,48 @@
                 <div class="col-md-4">
                     <h2 style="width: 343px;">My Requests</h2>
                 </div>
-                <div class="col-md-4 d-flex justify-content-end align-self-start"><i class="fas fa-search d-xl-flex justify-content-xl-center align-items-xl-center" style="margin-top: 4px;padding-right: 10px;padding-left: 5px;padding-top: 7px;"></i><input class="border rounded d-xl-flex justify-content-xl-center align-items-xl-center search-field" type="search" id="search-field" style="background-color: #eaeaea;width: 80%;height: 38px;padding: 0px;margin-left: 1px;" name="search"></div>
-                <div class="col-md-4 d-flex justify-content-center align-items-center"><button class="btn btn-primary d-flex align-items-center align-self-center" type="button" style="height: 38px;background-color: var(--bs-btn-bg);">Search for Orders</button></div>
+                <div id="placeholder"></div>
             </div>
-            <div class="row">
-                <div class="col-md-12"><table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        </div>
+    </div>
+
+    <table id="example" class="table table-striped table-bordered" cellspacing="0" width="80%">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>Order Id</th>
                 <th>Item</th>
                 <th>Address</th>
                 <th>Budget</th>
                 <th>Reward</th>
+                <th>Delivry Time</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-           
-            <tr>
-                <td>01</td>
-                <td>Milk</td>
-                <td>Supermarket</td>
-                <td>5.50</td>
-                <td>2.00</td>
-                    <td><button type="button" class="btn btn-danger"><i class="far fa-trash-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i></button>
-                        <button type="button" class="btn btn-warning"><i class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i></button>
-                    </td>
-            </tr>
-            <tr>
-                <td>02</td>
-                <td>Coffee</td>
-                <td>Starbucks</td>
-                <td>7.80</td>
-                <td>3.00</td>
-                <td><button type="button" class="btn btn-danger"><i class="far fa-trash-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i></button>
-                    <button type="button" class="btn btn-warning"><i class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i></button>
-                    </td>
-            </tr><tr>
-                <td>03</td>
-                <td>Textbook</td>
-                <td>Book store</td>
-                <td>10.50</td>
-                <td>2.00</td>
-                <td><button type="button" class="btn btn-danger"><i class="far fa-trash-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i></button>
-                    <button type="button" class="btn btn-warning"><i class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i></button>
-                    </td>
-            </tr>
-            <tr>
-                <td>04</td>
-                <td>Hamburger</td>
-                <td>Burger King</td>
-                <td>14.00</td>
-                <td>1.50</td>
-                <td><button type="button" class="btn btn-danger"><i class="far fa-trash-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i></button>
-                    <button type="button" class="btn btn-warning"><i class="fas fa-pencil-alt d-xl-flex justify-content-xl-center align-items-xl-center"></i></button>
-                    </td>
-            </tr>
-        </tbody>
+    
+    {% if requests %}
+    {% for req in requests %}
+    <tr>
+        <form method="post" action="/reqDelete">
+        <td>{{ req['rid'] }}</td>
+        <td>{{ req['RequestContent'] }}</td>
+        <td>{{ req['Address'] }}</td>
+        <td>{{ req['Budget'] }}</td>
+        <td>{{ req['Reward'] }}</td>
+        <td>{{ req['DeliveryTime'] }}</td>
+        <td>
+            <input type="hidden" name="rid" value="{{ req['rid'] }}">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </td>
+        </form>
+    </tr>
+    {% endfor %}
+    {% endif %}
+    
+    </tbody>
     </table></div>
-            </div>
-        </div>
     </div>
+    </div>
+    </div>
+
 {% endblock content %}

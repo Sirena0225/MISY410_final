@@ -5,20 +5,16 @@
         <div class="container">
             <div class="intro">
                 <h2 style="padding-top: 30px;">Your Order has successfully posted!</h2>
-                <p style="padding-bottom: 0px;margin-bottom: 0px;">Please complete the payment to continue</p>
+                <p style="padding-bottom: 0px;margin-bottom: 0px;">Check your order details in My Requests.</p>
             </div>
-            <form id="contact-form" action="assets/php/contact.php" method="post">
-                <div class="messages"></div>
-                <div class="controls"></div>
-                <div class="row">
-                    <div class="col-md-12"><button class="btn btn-success btn-send" value="Go to payment" type="" style="margin: auto;display: block;padding-left: 0px;padding-right: 0px;"><a id="go-to-payment" href="#payment"></a>Go to payment</button></div>
-                </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <p class="text-muted"><strong>*</strong> Pflichtfelder</p>
+                        <button class="btn btn-success btn-send" value="Go to payment" type="" style="margin: auto;display: block;padding-left: 0px;padding-right: 0px;">
+                        <a id="go-to-payment" href="/myrequest" type="button" class="btn btn-primary btn-send" style="margin: auto;display: block;padding-left: 0px;padding-right: 0px;">See My Requests</a>
+                    </button>
                     </div>
                 </div>
-            </form>
+            <br>
         </div>
     </div>
 {% endblock content %}

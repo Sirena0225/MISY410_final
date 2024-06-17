@@ -26,6 +26,13 @@
             <div class="controls">
                 <div class="row">
                     <div class="col-md-6">
+                        <div class="form-group mb-3"><input class="form-control" type="text" id="form_name" data-error="Please check*" name="rid" placeholder="Order ID (if has)" style="padding-right: 0px;">
+                            <div class="help-block with-errors"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
                         <div class="form-group mb-3"><input class="form-control" type="text" id="form_name" data-error="Please check*" name="item" placeholder="Item" style="padding-right: 0px;">
                             <div class="help-block with-errors"></div>
                         </div>
@@ -51,7 +58,7 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <div class="form-group mb-3"><input class="form-control" type="text" id="form_message" data-error="Nachricht erforderlich." rows="4" name="phone" placeholder="Phone number for Contact">
+                    <div class="form-group mb-3"><input class="form-control" type="email" id="form_message" data-error="Nachricht erforderlich." rows="4" name="email" placeholder="Email">
                         <div class="help-block with-errors"></div>
                     </div>
                 </div>
@@ -66,17 +73,16 @@
         </form>
 
     </div>
-
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-  
-  {% endwith %}
-
 </div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% endwith %}
 {% endblock content %}
