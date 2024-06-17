@@ -213,21 +213,6 @@ def myrequest():
 
     return render_template('myrequest.html', requests=requests)
 
-@app.route('/searchOrders', methods=['GET'])
-def SearchOrders():
-    # get sid send in the get request
-    rid = request.form['rid']
-
-    # retrieve the product records from the database for the given sid
-    if rid:
-        sql = "select * from Request where rid = %s"
-        cursor.execute( sql, (int(rid)))
-        requests = cursor.fetchall()
-
-    # send the product table back
-    return render_template('myrequest.html', requests=requests)
-
-
 
 @app.route('/data')
 def data():
@@ -237,7 +222,7 @@ def data():
 @app.route('/dataRequest')
 def dataRequest():
     # retrieve a list of supplier IDs from the database and pass then to the page
-    sql = "select Address from Request"
+    sql = "select DISTINCT Address from Request"
     cursor.execute(sql)
     req = cursor.fetchall()
     return render_template('reqdata.html', requests=req)
@@ -250,7 +235,7 @@ def requestGraph():
 
     # get product names and total in-stock values for the products supplied by the selected supplier
     if addr:
-        sql = "select Address as Merchant, count(*) as Total_Orders from Request where Address = %s GROUP BY RequestContent"
+        sql = "select RequestContent as label, count(*) as value from Request where Address = %s GROUP BY RequestContent"
         cursor.execute(sql, (addr))
         orders = cursor.fetchall()
         chartData = json.dumps(orders)

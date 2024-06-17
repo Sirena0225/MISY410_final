@@ -13,7 +13,7 @@
         // code copied from FusionChart Example
         const dataSource = {
             chart: {
-              caption: "Total Orders of Each Merchant",
+              caption: "Total Orders of the Merchant",
               xaxisname: "Item Name",
               yaxisname: "Total Orders",
               theme: "gammel"
@@ -25,7 +25,8 @@
             var myChart = new FusionCharts({
               type: "column2d",
               renderAt: "chart-container",
-              width: "100%",
+
+              width: "65%",
               height: "100%",
               dataFormat: "json",
               dataSource
@@ -34,8 +35,9 @@
           
 
     </script>
-
-    <div id="chart-container"></div>
+    <div class="text-center p-4 p-lg-5">
+      <div id="chart-container"></div>
+    </div>
 
 
 {% endblock %}
