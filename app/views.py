@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 # Flask modules
-from flask   import render_template, request, redirect, url_for, flash, json
+from flask   import render_template, request, redirect, url_for, flash, json, session
 from jinja2  import TemplateNotFound
 from datetime import datetime
 
@@ -48,6 +48,7 @@ def loginsumbit():
 
 @app.route('/register')
 def register():
+    
     return render_template('register.html')
 
 @app.route('/registersumbit', methods=['POST'])
@@ -56,6 +57,12 @@ def registersumbit():
     lastname = request.form['last_name']
     email = request.form['email']
     password = request.form['password']
+
+    session['first_name'] = firstname
+    session['last_name'] = lastname
+    session['email'] = email
+    session['password'] = password
+
     sql = "INSERT INTO Userprofile (first_name, last_name, email, password) values(%s, %s, %s, %s)"
     print(cursor.mogrify(sql,(firstname, lastname, email, password)))
     cursor.execute(sql, (firstname, lastname, email, password))
