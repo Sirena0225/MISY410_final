@@ -49,7 +49,6 @@ def loginsumbit():
 
 @app.route('/register')
 def register():
-    
     return render_template('register.html')
 
 @app.route('/registersumbit', methods=['POST'])
