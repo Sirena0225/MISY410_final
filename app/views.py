@@ -16,7 +16,7 @@ from app import app, dbConn, cursor
 # App main route + generic routing
 @app.route('/')
 def index():
-    return render_template('login.html')
+    return render_template('index.html')
 
 @app.route('/login')
 def login():
@@ -133,6 +133,7 @@ def completeinfo():
 def requestsubmit():
     # get the info from post data
     date = datetime.now()
+    rid = request.form['rid']
     item = request.form['item']
     addr = request.form['address']
     budg = request.form['budget']
@@ -170,10 +171,14 @@ def requestsubmit():
         # return to the form page
         return render_template('index.html', item=item, addr=addr, budg=budg, rewd=rewd, email=email, time=time)
     else:
-        sql = "INSERT INTO Request (RequestTime, RequestContent, Address, Budget, Reward, Email, DeliveryTime) values(%s, %s, %s, %s, %s, %s, %s)"
-        cursor.execute(sql, (date, item, addr, float(budg), float(rewd), email, time))
-        return render_template('req-success.html')
-
+        if not rid or rid=="":
+            sql = "INSERT INTO Request (RequestTime, RequestContent, Address, Budget, Reward, Email, DeliveryTime) values(%s, %s, %s, %s, %s, %s, %s)"
+            cursor.execute(sql, (date, item, addr, float(budg), float(rewd), email, time))
+            return render_template('req-success.html')
+        else: 
+            sql = "UPDATE Request SET RequestContent = %s, Address = %s, Budget = %s, Reward = %s, Email = %s, DeliveryTime = %s WHERE rid = %s"
+            cursor.execute(sql, (item, addr, float(budg), float(rewd), email, time, int(rid)))
+            return render_template('req-success.html')
 
 
 @app.route('/myrequest')
@@ -187,7 +192,7 @@ def SearchOrders():
 
     # retrieve the product records from the database for the given sid
     if email:
-        sql = "select * from Requests where email = %s"
+        sql = "select * from Request where email = %s"
         cursor.execute( sql, (email))
         requests = cursor.fetchall()
 
@@ -217,7 +222,7 @@ def requestGraph():
 
     # get product names and total in-stock values for the products supplied by the selected supplier
     if addr:
-        sql = "select Address as Merchant, count(*) as Total_Orders from Requests where Address = %s GROUP BY Address"
+        sql = "select Address as Merchant, count(*) as Total_Orders from Request where Address = %s GROUP BY Address"
         cursor.execute(sql, (addr))
         orders = cursor.fetchall()
         chartData = json.dumps(orders)
