@@ -348,34 +348,34 @@ def payeesubmit():
         else:
             return render_template('payee-2.html',raid=raid,pid=pid,PaymentMethodpayee=PaymentMethodpayee,amountpayee=amountpayee)
 
-@app.route('/waiting')
-def waiting():
-    pid = request.form.get('Payment-ID')
-    return render_template('waiting.html',pid=pid)
+# @app.route('/waiting')
+# def waiting():
+#     pid = request.form.get('Payment-ID')
+#     return render_template('waiting.html',pid=pid)
 
-@app.route('/paysubmit')
-def paysubmit():
-        amountpayee = request.form.get('amountpayee')
-        amountpayer = request.form.get('amountpayer')
-        pid = request.form.get('pid')
-        current_hour = datetime.now()
+# @app.route('/paysubmit', methods=['POST'])
+# def paysubmit():
+#         amountpayee = request.form.get('amountpayee')
+#         amountpayer = request.form.get('amountpayer')
+#         pid = request.form.get('pid')
+#         PaidTime = datetime.now()
        
-        if amountpayee and amountpayer:
-            sql = "select * from Payment where pid=%s "
+#         if amountpayee and amountpayer:
+#             sql = "select * from Payment where pid=%s "
 
-            cursor.execute(sql,(amountpayee, amountpayer))
-            payment = cursor.fetchone()
+#             cursor.execute(sql,(amountpayee, amountpayer))
+#             payment = cursor.fetchone()
 
-            if payment:
-                session['amountpayee'] = session['amountpayer']
-                sql = "INSERT INTO Payment (pid,amountpayee, amountpayer, current_time) values(%s, %s, %s, %s)"
-                flash("Successful!")
+#             if payment:
+#                 session['amountpayee'] = session['amountpayer']
+#                 sql = "INSERT INTO Payment (pid,amountpayee, amountpayer, Paidtime) values(%s, %s, %s, %s)"
+#                 flash("Successful!")
 
-                return render_template('pay-success.html')
+#                 return render_template('pay-success.html')
                 
-            else:
-                flash("Amount is incorrect. Please modify.")
-                return render_template('payee-2.html')
+#             else:
+#                 flash("Amount is incorrect. Please modify.")
+#                 return render_template('payee-2.html')
 
             
 @app.route('/modify')
@@ -384,9 +384,9 @@ def modify():
 
 @app.route('/modifysubmit', methods=['POST'])
 def modifysubmit():
-    raid = request.form.get('Acceptance-ID')
+
     pid = request.form.get('Payment-ID')
-    pm = request.form.get('Pay-Method')
+
     amountpayee = request.form.get('Amount')
     
 
@@ -395,7 +395,7 @@ def modifysubmit():
     cursor.execute(sql, (amountpayee, pid))
     flash('Modify successfully')
     
-    return render_template('confirm.html',raid,pid,pm,amountpayee)
+    return render_template('confirm.html',pid=pid,amountpayee=amountpayee)
 
 @app.route('/confirm')
 def confirm():
