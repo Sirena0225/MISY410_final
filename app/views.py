@@ -103,7 +103,18 @@ def userportrait():
     ageinfo = cursor.fetchall()
     chart_data = json.dumps(ageinfo)
 
-    return render_template('userportrait.html', chart_data=chart_data)
+
+    sqll = '''SELECT gender as label, COUNT(*) AS value
+            FROM Userprofile
+            WHERE gender IS NOT NULL
+            GROUP BY gender;'''
+    cursor.execute(sqll)
+    print(cursor.mogrify(sqll))
+    genderinfo = cursor.fetchall()
+    gender_data = json.dumps(genderinfo)
+
+
+    return render_template('userportrait.html', chart_data=chart_data, gender_data = gender_data)
 
 @app.route('/changepassword', methods=['POST'])
 def changepassword():
@@ -130,6 +141,7 @@ def completeinfo():
     age = request.form['age']
     city = request.form['city']
     country = request.form['country']
+    gender = request.form['gender']
     error = False
     if not email or email == '':
         error = True
@@ -146,14 +158,17 @@ def completeinfo():
     if not country or country == '':
         error = True
         flash('Country is required')
+    if not gender:
+        error = True
+        flash('Gender is required')
     if error:
-        return render_template('profile2.html', email=email, address=address, age=age, city=city, country=country)
-    
-    sql = "UPDATE Userprofile SET address=%s, age=%s, city=%s, country=%s WHERE email=%s"
-    print(cursor.mogrify(sql, (address, age, city, country, email)))
-    cursor.execute(sql, (address, age, city, country, email))
+        return render_template('profile2.html', email=email, address=address, age=age, city=city, country=country, gender=gender)
+
+    sql = "UPDATE Userprofile SET address=%s, age=%s, city=%s, country=%s, gender= %s WHERE email=%s"
+    print(cursor.mogrify(sql, (address, age, city, country, gender, email)))
+    cursor.execute(sql, (address, age, city, country, gender, email))
     flash('Your info is added successfully')
-    return render_template('profile2.html', email=email, address=address, age=age, city=city, country=country )
+    return render_template('profile2.html', email=email, address=address, age=age, city=city, country=country, gender= gender)
 
 
 @app.route('/requestSubmit', methods=['POST'])
