@@ -57,14 +57,18 @@
           }).render();
         });
         
-        
-            </script>
-
-    <style>
-    .card-body-2 {
-    height: 500px
+          
+        </script>
+        <style>
+            .card-body-2 {
+                height: 500px; 
 }
-    </style>
+            .card shadow mb-5 {
+                height: 520px; 
+}
+
+        </style>
+
 </head>
 
 
@@ -173,10 +177,10 @@
                                             <form>
                                                 <div class="row">
                                                     <div class="col">
-                                                        <div class="mb-3"><label class="form-label" for="username"><strong>Username</strong></label><input class="form-control" type="text" id="username" placeholder="user.name" name="username"></div>
+                                                        <div class="mb-3"><label class="form-label" for="username"><strong>Username</strong></label><input class="form-control" type="text" id="username" placeholder="username" name="username" value="{{session.last_name}} {{session.first_name}}"></div>
                                                     </div>
                                                     <div class="col">
-                                                        <div class="mb-3"><label class="form-label" for="email"><strong>Email Address</strong></label><input class="form-control" type="email" id="email" placeholder="user@example.com" name="email"></div>
+                                                        <div class="mb-3"><label class="form-label" for="email"><strong>Email Address</strong></label><input class="form-control" type="email" id="email" placeholder="user@example.com" name="email" value="{{ session.email }}"></div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -184,7 +188,7 @@
                                                         <div class="mb-3"><label class="form-label" for="first_name"><strong>Age</strong></label><input class="form-control" type="text" id="age" placeholder="age" name="age"></div>
                                                     </div>
                                                     <div class="col">
-                                                        <div class="mb-3"><label class="form-label" for="last_name"><strong>Password</strong></label><input class="form-control" type="text" id="pastword" placeholder="*****" name="password"></div>
+                                                        <div class="mb-3"><label class="form-label" for="last_name"><strong>Password</strong></label><input class="form-control" type="text" id="pastword" placeholder="*****" name="password" value="{{ session.password }}"></div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -192,7 +196,7 @@
                                                         <div class="mb-3"><label class="form-label" for="first_name"><strong>Campus ID</strong></label><input class="form-control" type="text" id="phone_number-1" placeholder="****" name="phone_number"></div>
                                                     </div>
                                                     <div class="col">
-                                                        <div class="mb-3"><label class="form-label" for="last_name"><strong>School</strong></label><input class="form-control" type="text" id="pastword-1" placeholder="school" name="password"></div>
+                                                        <div class="mb-3"><label class="form-label" for="last_name"><strong>School</strong></label><input class="form-control" type="text" id="pastword-1" placeholder="school" name="school"></div>
                                                     </div>
                                                 </div>
                                                 <div class="mb-3"><button class="btn btn-primary btn-sm" type="submit">Save Settings</button></div>
@@ -240,6 +244,7 @@
                             </div>
                         </div>
                     </div>
+                   
                     <div class="card shadow mb-5">
                         <div class="card-header py-3">
                             <p class="text-primary m-0 fw-bold">User Portrait</p>
@@ -250,19 +255,20 @@
                                     
                                         <div class="mb-3"><label class="form-label" for="signature"><strong>Age Distribution</strong></label></div>
                                         <div id="chart-container"></div>
+                                        
                                 
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    
+
+
+
+                    
+
                 
-
-
-
-
-
-
 
 
                 </div>
@@ -275,7 +281,7 @@
         <div class="container"><p class="m-0 small">Copyright &copy; Sharing Take-away Group05 2024</p></div>
     </footer>
     <!-- Bootstrap core JS-->
-    <script src="static/assets/bootstrap/js/bootstrap.min.js"></>
+    <script src="static/assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://cdn.reflowhq.com/v2/toolkit.min.js"></script>
     <script src="static/assets/js/bs-init.js"></script>
     <script src="static/assets/js/PHP-Contact-Form-dark-contact.js"></script>
