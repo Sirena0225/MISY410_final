@@ -222,7 +222,6 @@ def myrequest():
 @app.route("/reqDelete", methods=['POST'])
 def reqdelete():
     rid = request.form.get('rid')
-    email = request.form.get('email')
     if rid:
         sql = "DELETE FROM Request WHERE rid = %s"
         cursor.execute(sql,(int(rid)))
