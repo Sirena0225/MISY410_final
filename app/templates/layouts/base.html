@@ -43,13 +43,18 @@
                 </div>
                 <div data-reflow-type="auth-button">
                     <div class="reflow-auth-button">
-                        <div class="ref-auth-button-guest" style="display: none;">
-                            <div class="ref-button ref-sign-in">Sign In</div>
-                            <div class="ref-register">Don't have an account? <span class="text-primary">Register<span></span></span></div>
+                        {% if login %}
+                        <div class="ref-auth-button-signed" style="display: block;">
+                            <a class="ref-profile-info">
+                                <img class="ref-profile-photo" src="https://api.reflowhq.com/img/gravatar/default.png" />
+                                <span class="ref-profile-name"></span></a>
+                            <a class="btn btn-primary" href="/profile">My Info</a>
                         </div>
-                        <div class="ref-auth-button-signed" style="display: block;"><a class="ref-profile-info"><img class="ref-profile-photo" src="https://api.reflowhq.com/img/gravatar/default.png" /><span class="ref-profile-name"></span></a>
-                            <div class="ref-button ref-sign-out">Sign Out</div>
+                        {% else %}
+                        <div class="ref-auth-button-guest" style="display: block;">
+                            <a class="btn btn-primary" href="/login">Sign In</a>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
