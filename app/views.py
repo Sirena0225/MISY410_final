@@ -231,3 +231,23 @@ def graph():
     else:
         return render_template('graphsearch.html')
 
+@app.route("/Acceptance",methods=['GET'])
+def Acceptance():
+    sql1="select * from Request_acceptance"
+    cursor.execute(sql1)
+    product1= cursor.fetchall()
+    return render_template('myaccept.html',Acceptances=product1)
+
+@app.route("/acceDelete", methods=['POST'])
+def accedelete():
+    raid = request.form.get('raid')
+    if raid:
+        sql = "DELETE FROM Request_acceptance WHERE raid = %s"
+        cursor.execute(sql,(int(raid)))
+
+        sql = "select * from Request_acceptance"
+        cursor.execute(sql)
+        accedelete = cursor.fetchall()
+        return render_template('myaccept.html', Acceptances=accedelete)
+
+
