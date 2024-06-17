@@ -405,34 +405,32 @@ def confirm():
 @app.route('/confirmsubmit', methods=['POST'])
 def confirmsubmit():
     pid = request.form.get('Payment-ID')
-    sql = "select amountpayer from Payment where pid = %s"
+    PaidTime = datetime.now()
+    sql = "select amountpayee from Payment where pid = %s"
     cursor.execute(sql,(pid))
     row = cursor.fetchone()
     if row:
         amountpayee = float(row['amountpayee'])
         print(cursor.mogrify(sql,(pid)))
-    PaidTime = datetime.now()
 
     if 'submit' in request.form:
-            return submit(pid, amountpayee)
+            return submit(pid, amountpayee, PaidTime)
     elif 'cancel' in request.form:
             return cancel(pid)
     
-    def submit(pid, amountpayee_m):    
-         db = connect_db()
-         cursor = db.cursor()
-         cursor.execute("INSERT INTO Payment (pid,amountpayee_m) values(%s, %s)")
-         db.commit()
-         db.close()
+    def submit(pid, amountpayee,PaidTime):    
+         
+         sql= "UPDATE Payment SET amountpayee= %s, PaidTime = %s  WHERE pid= %s"
+         print(cursor.mogrify(sql, (amountpayee,PaidTime, pid)))
+         cursor.execute(sql, (amountpayee,PaidTime, pid))
+
          flash('Payment submitted successfully!')
          return render_template('pay-success.html')
 
     def cancel(pid):
-        db = connect_db()
-        cursor = db.cursor()
-        cursor.execute("DELETE * FROM Payment  WHERE pid = pid")
-        db.commit()
-        db.close()
+        
+        cursor.execute("DELETE  FROM Payment  WHERE pid = %s")
+  
         flash('Payment Cancel successfully!')
         return render_template('confirm.html')
 
