@@ -292,3 +292,150 @@ def accept():
         return render_template('acceptance.html',acceptances = acceptances)
     else:
         return render_template('searchaccept.html')
+
+@app.route('/payer')
+def payer():
+    return render_template('payer-1.html')
+
+@app.route('/payersubmit', methods=['POST'])
+def payersubmit():
+        rid = request.form.get('Request-ID')
+        pid = request.form.get('Payment-ID')
+        PaymentMethodpayer = request.form.get('Pay-Method')
+        amountpayer = request.form.get('Amount')
+        sql = "INSERT INTO Payment (rid,pid,PaymentMethodpayer,amountpayer) values(%s, %s, %s, %s)"
+        print(cursor.mogrify(sql,(rid,pid,PaymentMethodpayer,amountpayer)))
+        cursor.execute(sql, (rid,pid,PaymentMethodpayer,amountpayer))
+        flash('New payer added successfully')
+        return render_template('waiting.html',rid=rid,pid=pid,PaymentMethodpayer=PaymentMethodpayer,amountpayer=amountpayer)
+
+@app.route('/payee')
+def payee():
+    return render_template('payee-1.html')
+
+@app.route('/payeesubmit', methods=['POST'])
+def payeesubmit():
+        raid = request.form.get('Acceptance-ID')
+        pid = request.form.get('Payment-ID')
+        PaymentMethodpayee = request.form.get('Pay-Method')
+        amountpayee = float(request.form.get('Amount'))
+        PaidTime = datetime.now()
+
+        # GET THE AMOUNT FROM DB USING PID
+        sql = "select amountpayer from Payment where pid = %s"
+        cursor.execute(sql,(pid))
+        row = cursor.fetchone()
+        if row:
+            amountpayer = float(row['amountpayer'])
+        print(cursor.mogrify(sql,(pid)))
+
+                
+        # COMPARE THE TWO AMOUNTS
+        # IF AMOUTPAYEE < BUYER SPECIFIED AMOUNT, NOTIFY THE BUYER TO UPDATE THE AMOUNT
+        if amountpayee < amountpayer:
+            
+                
+            sql = "UPDATE Payment SET raid=%s, PaymentMethodpayee=%s, amountpayee=%s ,PaidTime= %s WHERE pid=%s"
+            print(cursor.mogrify(sql,(raid,PaymentMethodpayee,amountpayee,PaidTime, pid)))
+            cursor.execute(sql, (raid,PaymentMethodpayee,amountpayee,PaidTime, pid))
+            flash('New payer added successfully')
+            return render_template('pay-success.html')
+        # # ELSE THEN UPDATE
+        # sql = "UPDATE Payment SET raid=%s, PaymentMethodpayee=%s, amountpayee=%s WHERE pid=%s"
+        # print(cursor.mogrify(sql,(raid,PaymentMethodpayee,amountpayee,pid)))
+        # cursor.execute(sql, (raid,PaymentMethodpayee,amountpayee,pid))
+        # flash('New payer added successfully')
+        else:
+            return render_template('payee-2.html',raid=raid,pid=pid,PaymentMethodpayee=PaymentMethodpayee,amountpayee=amountpayee)
+
+@app.route('/waiting')
+def waiting():
+    pid = request.form.get('Payment-ID')
+    return render_template('waiting.html',pid=pid)
+
+@app.route('/paysubmit')
+def paysubmit():
+        amountpayee = request.form.get('amountpayee')
+        amountpayer = request.form.get('amountpayer')
+        pid = request.form.get('pid')
+        current_hour = datetime.now()
+       
+        if amountpayee and amountpayer:
+            sql = "select * from Payment where pid=%s "
+
+            cursor.execute(sql,(amountpayee, amountpayer))
+            payment = cursor.fetchone()
+
+            if payment:
+                session['amountpayee'] = session['amountpayer']
+                sql = "INSERT INTO Payment (pid,amountpayee, amountpayer, current_time) values(%s, %s, %s, %s)"
+                flash("Successful!")
+
+                return render_template('pay-success.html')
+                
+            else:
+                flash("Amount is incorrect. Please modify.")
+                return render_template('payee-2.html')
+
+            
+@app.route('/modify')
+def modify():
+    return render_template('payee-2.html')
+
+@app.route('/modifysubmit', methods=['POST'])
+def modifysubmit():
+    raid = request.form.get('Acceptance-ID')
+    pid = request.form.get('Payment-ID')
+    pm = request.form.get('Pay-Method')
+    amountpayee = request.form.get('Amount')
+    
+
+    sql = "UPDATE Payment SET amountpayee = %s  WHERE pid = %s;"
+    print(cursor.mogrify(sql,(amountpayee,  pid)))
+    cursor.execute(sql, (amountpayee, pid))
+    flash('Modify successfully')
+    
+    return render_template('confirm.html',raid,pid,pm,amountpayee)
+
+@app.route('/confirm')
+def confirm():
+    pid = request.form.get('Payment-ID')
+    return render_template('confirm.html',pid=pid)
+
+@app.route('/confirmsubmit', methods=['POST'])
+def confirmsubmit():
+    pid = request.form.get('Payment-ID')
+    sql = "select amountpayer from Payment where pid = %s"
+    cursor.execute(sql,(pid))
+    row = cursor.fetchone()
+    if row:
+        amountpayee = float(row['amountpayee'])
+        print(cursor.mogrify(sql,(pid)))
+    PaidTime = datetime.now()
+
+    if 'submit' in request.form:
+            return submit(pid, amountpayee)
+    elif 'cancel' in request.form:
+            return cancel(pid)
+    
+    def submit(pid, amountpayee_m):    
+         db = connect_db()
+         cursor = db.cursor()
+         cursor.execute("INSERT INTO Payment (pid,amountpayee_m) values(%s, %s)")
+         db.commit()
+         db.close()
+         flash('Payment submitted successfully!')
+         return render_template('pay-success.html')
+
+    def cancel(pid):
+        db = connect_db()
+        cursor = db.cursor()
+        cursor.execute("DELETE * FROM Payment  WHERE pid = pid")
+        db.commit()
+        db.close()
+        flash('Payment Cancel successfully!')
+        return render_template('confirm.html')
+
+    
+
+

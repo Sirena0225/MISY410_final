@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm Payment</title>
+</head>
+<body>
+    <h1>Confirm Payment</h1>
+    <form method="post" action="/confirmsubmit">
+        <div>
+            <label for="Payment-ID">Payment ID:</label>
+            <input type="text" id="Payment-ID" name="Payment-ID" value="{{ request.form.get('Payment-ID', '') }}">
+        </div>
+        <div>
+            <label for="Amount">Amount:</label>
+            <input type="text" id="Amount" name="Amount" value="{{ request.form.get('Amount', '') }}">
+        </div>
+        <div>
+            <button type="submit" name="submit">Submit</button>
+            <button type="submit" name="cancel">Cancel</button>
+        </div>
+    </form>
+</body>
+</html>
