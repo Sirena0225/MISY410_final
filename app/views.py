@@ -209,7 +209,7 @@ def requestsubmit():
 
 @app.route('/myrequest')
 def myrequest():
-    email = session['email'] # '123@qq.com'
+    email = session['email']
 
     if email:
         sql = "select * from Request where email = %s"
@@ -217,6 +217,20 @@ def myrequest():
         requests = cursor.fetchall()
 
     return render_template('myrequest.html', requests=requests)
+
+
+@app.route("/reqDelete", methods=['POST'])
+def reqdelete():
+    rid = request.form.get('rid')
+    email = request.form.get('email')
+    if rid:
+        sql = "DELETE FROM Request WHERE rid = %s"
+        cursor.execute(sql,(int(rid)))
+        sql = "select * from Request WHERE email = %s"
+        cursor.execute( sql, (session['email']))
+        requests = cursor.fetchall()
+        return render_template('myrequest.html', requests=requests)
+
 
 
 @app.route('/data')

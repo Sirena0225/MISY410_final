@@ -22,6 +22,7 @@
                 <th>Budget</th>
                 <th>Reward</th>
                 <th>Delivry Time</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -29,13 +30,18 @@
     {% if requests %}
     {% for req in requests %}
     <tr>
+        <form method="post" action="/reqDelete">
         <td>{{ req['rid'] }}</td>
         <td>{{ req['RequestContent'] }}</td>
         <td>{{ req['Address'] }}</td>
         <td>{{ req['Budget'] }}</td>
         <td>{{ req['Reward'] }}</td>
         <td>{{ req['DeliveryTime'] }}</td>
-    
+        <td>
+            <input type="hidden" name="rid" value="{{ req['rid'] }}">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </td>
+        </form>
     </tr>
     {% endfor %}
     {% endif %}
