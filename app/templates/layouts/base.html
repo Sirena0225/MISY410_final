@@ -41,22 +41,29 @@
                         <a class="dropdown-item" href="/data">Data Analysis</a>
                     </div>
                 </div>
+                <ul class="navbar-nav ms-auto">
+                    {% if login %}
+                    <li class="nav-item"><a class="nav-link" href="/profile">User Page</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="/login">User Page</a></li>
+                    {% endif %}
+                </ul>
+                <!-- 
                 <div data-reflow-type="auth-button">
                     <div class="reflow-auth-button">
-                        {% if login %}
+
                         <div class="ref-auth-button-signed" style="display: block;">
                             <a class="ref-profile-info">
                                 <img class="ref-profile-photo" src="https://api.reflowhq.com/img/gravatar/default.png" />
                                 <span class="ref-profile-name"></span></a>
                             <a class="btn btn-primary" href="/profile">My Info</a>
                         </div>
-                        {% else %}
+
                         <div class="ref-auth-button-guest" style="display: block;">
                             <a class="btn btn-primary" href="/login">Sign In</a>
-                        </div>
-                        {% endif %}
+                        </div> 
                     </div>
-                </div>
+                </div >-->
             </div>
         </nav>
 
