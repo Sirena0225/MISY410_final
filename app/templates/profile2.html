@@ -28,70 +28,6 @@
     <!-- Step 2 - Include the fusion theme -->
     <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.gammel.js"></script>
     
-    <script>
-
-        // 接收从 views.py 传递的数据
-var importData = JSON.parse({{ chart_data | tojson | safe }});
-
-// 第一张图表的数据源配置
-const dataSourceColumn = {
-  chart: {
-    caption: "Age Distribution Graph",
-    subcaption: "Number of users in different age groups",
-    xaxisname: "Age Groups",
-    yaxisname: "Total Number of Users",
-    numbersuffix: "K",
-    theme: "gammel"
-  },
-  data: importData // 使用转换后的数据
-};
-
-// 第二张图表的数据源配置
-const dataSourcePie = {
-  chart: {
-    caption: "Recommended Portfolio Split",
-    subcaption: "For a net-worth of $1M",
-    showvalues: "1",
-    showpercentintooltip: "0",
-    numberprefix: "$",
-    enablemultislicing: "1",
-    theme: "gammel"
-  },
-  data: importData // 这里假设 importData 也适用于饼图数据结构
-};
-
-FusionCharts.ready(function() {
-  // 渲染第一张图表
-  new FusionCharts({
-    type: "column2d",
-    renderAt: "chart-container",
-    width: "100%",
-    height: "500", // 您可以根据需要设置一个固定高度或使用100%等
-    dataFormat: "json",
-    dataSource: dataSourceColumn
-  }).render();
-
-  // 渲染第二张图表
-  new FusionCharts({
-    type: "pie3d",
-    renderAt: "chart-container-pie",
-    width: "100%",
-    height: "500", // 同上
-    dataFormat: "json",
-    dataSource: dataSourcePie
-  }).render();
-});
-
-</script>
-        <style>
-            .card-body-2 {
-                height: 500px; 
-}
-            .card shadow mb-5 {
-                height: 520px; 
-}
-
-        </style>
 
 </head>
 
@@ -107,7 +43,7 @@ FusionCharts.ready(function() {
             <div class="collapse navbar-collapse" id="navcol-2">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="/">Place an order</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Accept an order</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/accept">Accept an order</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Payments</a></li>
                     <li class="nav-item"></li>
                 </ul>
@@ -115,19 +51,24 @@ FusionCharts.ready(function() {
             <div class="dropdown"><a class="dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" href="#">My Orders&nbsp;</a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="/myrequest">My Requests</a>
-                    <a class="dropdown-item" href="#">My Acceptance</a>
+                    <a class="dropdown-item" href="/acceptance">My Acceptance</a>
                     <a class="dropdown-item" href="/data">Data Analysis</a>
                 </div>
             </div>
             <div data-reflow-type="auth-button">
                 <div class="reflow-auth-button">
-                    <div class="ref-auth-button-guest" style="display: none;">
-                        <div class="ref-button ref-sign-in">Sign In</div>
-                        <div class="ref-register">Don't have an account? <span class="text-primary">Register<span></span></span></div>
+                    {% if login %}
+                    <div class="ref-auth-button-signed" style="display: block;">
+                        <a class="ref-profile-info">
+                            <img class="ref-profile-photo" src="https://api.reflowhq.com/img/gravatar/default.png" />
+                            <span class="ref-profile-name"></span></a>
+                        <a class="btn btn-primary" href="/profile">My Info</a>
                     </div>
-                    <div class="ref-auth-button-signed" style="display: block;"><a class="ref-profile-info"><img class="ref-profile-photo" src="https://api.reflowhq.com/img/gravatar/default.png" /><span class="ref-profile-name"></span></a>
-                        <div class="ref-button ref-sign-out">Sign Out</div>
+                    {% else %}
+                    <div class="ref-auth-button-guest" style="display: block;">
+                        <a class="btn btn-primary" href="/login">Sign In</a>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -232,6 +173,8 @@ FusionCharts.ready(function() {
                                             <form action="/completeinfo" method="post">
                                                 <div class="mb-3"><label class="form-label" for="address"><strong>Address</strong></label><input class="form-control" type="text" id="address" placeholder="Sunset Blvd, 38" name="address" value="{{ address }}"></div>
                                                 <div class="mb-3"><label class="form-label" for="first_name"><strong>Age</strong></label><input class="form-control" type="text" id="age" placeholder="age" name="age" value="{{ age }}"></div>
+                                                <div class="mb-3"><label class="form-label" for="first_name"><strong>Gender</strong></label><select id="gender" name="gender" class="form-control" value="{{ gender }}"><option value="male">Male</option><option value="female">Female</option></select></div>
+            
                                                 <div class="row">
                                                     <div class="col-lg-6">
                                                         <div class="mb-3"><label class="form-label" for="city"><strong>City</strong></label><input class="form-control" type="text" id="city" placeholder="Los Angeles" name="city" value="{{ city }}"></div>
@@ -241,6 +184,17 @@ FusionCharts.ready(function() {
                                                     </div>
                                                 </div>
                                                 <div class="mb-3"><button class="btn btn-primary btn-sm" type="submit">Save&nbsp;Settings</button></div>
+                                            
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="card shadow mb-3">
+                                        <div class="card-header py-3">
+                                            <p class="text-primary m-0 fw-bold">Delete Your Info</p>
+                                        </div>
+                                        <div class="card-body">
+                                            <form action="/deleteinfo" method="post">
+                                                <div class="mb-3"><button class="btn btn-primary btn-sm" type="submit">Delete</button></div>
                                             </form>
                                         </div>
                                     </div>
@@ -248,11 +202,7 @@ FusionCharts.ready(function() {
                             </div>
                         </div>
                     </div>
-                    <div class="card-header py-3">
-                        <p class="text-primary m-0 fw-bold">User Portrait</p>
-                    </div>
-                    <div id="chart-container"></div>
-                    <div id="chart-container-pie"></div>
+                
                         
                 
                 </div>

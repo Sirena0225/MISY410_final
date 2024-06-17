@@ -1,0 +1,120 @@
+{% extends "layouts/base.html" %}
+{% block title %} My Request {% endblock title %} 
+
+{% block content %}
+
+<!-- Step 1 - Include the fusioncharts core library -->
+<script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+<!-- Step 2 - Include the fusion theme -->
+<script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.gammel.js"></script>
+
+<script>
+
+
+var importData = JSON.parse({{ chart_data | tojson | safe }});
+var GenderData = JSON.parse({{ gender_data | tojson | safe }})
+
+
+const dataSourceColumn = {
+chart: {
+caption: "Age Distribution Graph",
+subcaption: "Number of users in different age groups",
+xaxisname: "Age Groups",
+yaxisname: "Total Number of Users",
+theme: "gammel"
+},
+data: importData 
+};
+
+
+const dataSourcePie = {
+chart: {
+caption: "Age Distribution Proportion",
+subcaption: "",
+showvalues: "1",
+showpercentintooltip: "0",
+enablemultislicing: "1",
+theme: "gammel"
+},
+data: importData 
+};
+
+const dataSourceGenderColumn = {
+chart: {
+caption: "Gender Distribution Bar Chart",
+subcaption: "",
+xaxisname: "Gender",
+yaxisname: "Total Number of Users",
+theme: "gammel"
+},
+data: GenderData
+};
+
+const dataSourceGenderPie = {
+chart: {
+caption: "Gender Distribution Proportion",
+subcaption: "",
+showvalues: "1",
+showpercentintooltip: "0",
+enablemultislicing: "1",
+theme: "gammel"
+},
+data: GenderData 
+};
+
+FusionCharts.ready(function() {
+
+new FusionCharts({
+type: "column2d",
+renderAt: "chart-container",
+width: "100%",
+height: "500", 
+dataFormat: "json",
+dataSource: dataSourceColumn
+}).render();
+
+new FusionCharts({
+type: "column2d",
+renderAt: "chart-container-gender",
+width: "100%",
+height: "500", 
+dataFormat: "json",
+dataSource: dataSourceGenderColumn
+}).render();
+
+new FusionCharts({
+type: "pie3d",
+renderAt: "chart-container-pie",
+width: "100%",
+height: "500", 
+dataFormat: "json",
+dataSource: dataSourcePie
+}).render();
+
+new FusionCharts({
+type: "pie3d",
+renderAt: "chart-container-genderpie",
+width: "100%",
+height: "500", 
+dataFormat: "json",
+dataSource: dataSourceGenderPie
+}).render();
+});
+
+
+
+</script>
+
+
+
+<div class="card-header py-3">
+    <p class="text-primary m-0 fw-bold">User Portrait</p>
+</div>
+<div id="chart-container"></div>
+<div id="chart-container-pie"></div>
+<div id="chart-container-gender"></div>
+<div id="chart-container-genderpie"></div>
+
+
+
+{% endblock content %}
