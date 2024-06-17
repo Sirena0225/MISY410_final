@@ -1,0 +1,25 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<table class="table table-striped" name="acceptance" id="acceptance">
+    <thead>
+        <tr>
+            <th>Raid</th>
+            <th>Rid</th>
+            <th>Email</th>
+            <th>AcceptanceTime</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if acceptances %}
+            {% for ace in acceptances %}
+                <tr>
+                    <td>{{ ace['raid']}}</td>
+                    <td>{{ ace['Request_rid'] }}</td>
+                    <td>{{ ace['Userprofile_email'] }}</td>
+                    <td>{{ ace['AcceptanceTime'] }}</td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+{% endblock content%}

@@ -7,6 +7,7 @@ Copyright (c) 2019 - present AppSeed.us
 from flask   import render_template, request, redirect, url_for, flash, json, session
 from jinja2  import TemplateNotFound
 from datetime import datetime
+import random
 
 # App modules
 from app import app, dbConn, cursor
@@ -186,3 +187,33 @@ def requestGraph():
 @app.route('/about')
 def about():
     return render_template('about.html')
+
+@app.route('/accept')
+def searchproducts():
+    return render_template('accept.html')
+
+@app.route("/acceptSubmit",methods=['GET'])
+def acceptSubmit():
+    so = request.args.get('Searchorders')
+    if so:
+        sql = "select * from Request where RequestContent = %s"
+        cursor.execute(sql,(so))
+        orders = cursor.fetchall()
+        return render_template('searchaccept.html',orders=orders)
+    else:
+        return render_template("accept.html")
+
+@app.route("/acceptance", methods=['POST'])
+def accept():
+    raid = random.randint(1000, 9999)  
+    acceTime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
+    rid = request.form.get('rid')
+    email = request.form.get('email')
+    if raid:
+        sql = "INSERT INTO Request_acceptance (raid, AcceptanceTime, Request_rid, Userprofile_email) VALUES (%s,%s,%s,%s)"
+        print(cursor.mogrify(sql,(int(raid),acceTime,int(rid),email)))
+        cursor.execute(sql,(int(raid),acceTime,int(rid), email))
+        acceptances = cursor.fetchall()
+        return render_template('acceptance.html',acceptances = acceptances)
+    else:
+        return render_template('searchaccept.html')
