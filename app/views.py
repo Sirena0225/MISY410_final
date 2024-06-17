@@ -108,17 +108,40 @@ def changepassword():
         print(cursor.mogrify(sql, (newpassword, email)))
         cursor.execute(sql, (newpassword, email))
         flash('New password updated successfully')
-   
+    if not newpassword or newpassword =='':
+        return render_template('profile2.html')
+    
     return render_template('profile2.html')
 
 
 @app.route('/completeinfo', methods=['POST'])
 def completeinfo():
-    email = session.form['email']
+    email = session.get('email')
     address = request.form['address']
     age = request.form['age']
     city = request.form['city']
     country = request.form['country']
+    error = False
+    if not email or email == '':
+        error = True
+        flash('Email is required')
+    if not address or address == '':
+        error = True
+        flash('Address is required')
+    if not age or age == '':
+        error = True
+        flash('Age is required')
+    if not city or city == '':
+        error = True
+        flash('City is required')
+    if not country or country == '':
+        error = True
+        flash('Country is required')
+    if error:
+        return render_template('profile.html', email=email, address=address,age=age,city=city,country=country)
+    
+
+
     sql = "UPDATE Userprofile SET address=%s, age=%s, city=%s, country=%s WHERE email=%s"
     print(cursor.mogrify(sql, (address, age, city, country, email)))
     cursor.execute(sql, (address, age, city, country, email))
