@@ -70,34 +70,6 @@ def registersumbit():
     return render_template('login.html')
 
 
-
-@app.route('/profile')
-def profile():
-    sql = ''' 
-    SELECT 
-    CASE
-        WHEN age < 16 THEN '<16'
-        WHEN age BETWEEN 16 AND 25 THEN '16~25'
-        WHEN age BETWEEN 26 AND 40 THEN '25~40'
-        ELSE '>40'
-      END AS label,
-      COUNT(*) AS value
-    FROM
-      Userprofile
-    GROUP BY
-      CASE
-        WHEN age < 16 THEN '<16'
-        WHEN age BETWEEN 16 AND 25 THEN '16~25'
-        WHEN age BETWEEN 26 AND 40 THEN '25~40'
-        ELSE '>40'
-      END '''
-    cursor.execute(sql)
-    print(cursor.mogrify(sql))
-    ageinfo = cursor.fetchall()
-    chart_data = json.dumps(ageinfo)
-
-    return render_template('profile.html', chart_data=chart_data)
-
 @app.route('/requestSubmit', methods=['POST'])
 def requestsubmit():
     # get the info from post data
@@ -106,7 +78,7 @@ def requestsubmit():
     addr = request.form['address']
     budg = request.form['budget']
     rewd = request.form['reward']
-    phone = request.form['phone']
+    email = request.form['email']
     time = request.form['time']
     error = False
     
@@ -126,9 +98,9 @@ def requestsubmit():
         error = True
         flash('Reward is required')
 
-    if not phone or phone=="":
+    if not email or email=="":
         error = True
-        flash('Phone number is required')
+        flash('Email is required')
 
     if not time or time=="":
         error = True
@@ -137,20 +109,32 @@ def requestsubmit():
 
     if error:
         # return to the form page
-        return render_template('index.html', item=item, addr=addr, budg=budg, rewd=rewd, phone=phone, time=time)
+        return render_template('index.html', item=item, addr=addr, budg=budg, rewd=rewd, email=email, time=time)
     else:
-        sql = "INSERT INTO Request (RequestTime, RequestContent, Address, Budget, Reward, PhoneNumber, DeliveryTime) values(%s, %s, %s, %s, %s, %s, %s)"
-        cursor.execute(sql, (date, item, addr, float(budg), float(rewd), phone, time))
+        sql = "INSERT INTO Request (RequestTime, RequestContent, Address, Budget, Reward, Email, DeliveryTime) values(%s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(sql, (date, item, addr, float(budg), float(rewd), email, time))
         return render_template('req-success.html')
-
-
-
 
 
 
 @app.route('/myrequest')
 def myrequest():
     return render_template('myrequest.html')
+
+@app.route('/searchOrders', methods=['GET'])
+def SearchOrders():
+    # get sid send in the get request
+    email = request.args.get('email')
+
+    # retrieve the product records from the database for the given sid
+    if email:
+        sql = "select * from Requests where email = %s"
+        cursor.execute( sql, (email))
+        requests = cursor.fetchall()
+
+    # send the product table back
+    return render_template('reqTable.html', requests=requests)
+
 
 
 @app.route('/data')
