@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 # Flask modules
-from flask   import render_template, request, redirect, url_for, flash
+from flask   import render_template, request, redirect, url_for, flash, json
 from jinja2  import TemplateNotFound
 from datetime import datetime
 import random
@@ -63,6 +63,35 @@ def registersumbit():
     flash('New user added successfully')
     return render_template('login.html')
 
+
+
+@app.route('/profile')
+def profile():
+    sql = ''' 
+    SELECT 
+    CASE
+        WHEN age < 16 THEN '<16'
+        WHEN age BETWEEN 16 AND 25 THEN '16~25'
+        WHEN age BETWEEN 26 AND 40 THEN '25~40'
+        ELSE '>40'
+      END AS label,
+      COUNT(*) AS value
+    FROM
+      Userprofile
+    GROUP BY
+      CASE
+        WHEN age < 16 THEN '<16'
+        WHEN age BETWEEN 16 AND 25 THEN '16~25'
+        WHEN age BETWEEN 26 AND 40 THEN '25~40'
+        ELSE '>40'
+      END '''
+    cursor.execute(sql)
+    print(cursor.mogrify(sql))
+    ageinfo = cursor.fetchall()
+    chart_data = json.dumps(ageinfo)
+
+    return render_template('profile.html', chart_data=chart_data)
+
 @app.route('/requestSubmit', methods=['POST'])
 def requestsubmit():
     # get the info from post data
@@ -107,6 +136,9 @@ def requestsubmit():
         sql = "INSERT INTO Request (RequestTime, RequestContent, Address, Budget, Reward, PhoneNumber, DeliveryTime) values(%s, %s, %s, %s, %s, %s, %s)"
         cursor.execute(sql, (date, item, addr, float(budg), float(rewd), phone, time))
         return render_template('req-success.html')
+
+
+
 
 
 
