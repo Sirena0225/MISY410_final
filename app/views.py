@@ -299,7 +299,7 @@ def acceptSubmit():
 
 @app.route("/acceptance", methods=['POST'])
 def accept():
-    raid = random.randint(1000, 9999)  
+    raid = random.randint(1, 9999)  
     acceTime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
     rid = request.form.get('rid')
     email = request.form.get('email')
@@ -307,7 +307,48 @@ def accept():
         sql = "INSERT INTO Request_acceptance (raid, AcceptanceTime, Request_rid, Userprofile_email) VALUES (%s,%s,%s,%s)"
         print(cursor.mogrify(sql,(int(raid),acceTime,int(rid),email)))
         cursor.execute(sql,(int(raid),acceTime,int(rid), email))
+
+        sql = "select * from Request_acceptance where raid=%s"
+        cursor.execute(sql, raid)
         acceptances = cursor.fetchall()
-        return render_template('acceptance.html',acceptances = acceptances)
+        return render_template('acceptance.html',acceptan = acceptances)
     else:
         return render_template('searchaccept.html')
+
+@app.route("/graphsearch",methods=['GET'])
+def graphsearch():
+    return render_template('graphsearch.html')
+
+
+@app.route('/graph',methods=['POST'])
+def graph():
+    month = request.form.get("month")
+    if month:
+        sql2="select MONTH(AcceptanceTime) AS label,COUNT(*) AS value FROM Request_acceptance where MONTH(AcceptanceTime) = %s GROUP BY MONTH(AcceptanceTime)"
+        cursor.execute(sql2,month)
+        product2=cursor.fetchall()
+        chart_data2=json.dumps(product2)
+        return render_template('graph.html', acceptances=chart_data2)
+    else:
+        return render_template('graphsearch.html')
+
+@app.route("/Acceptance",methods=['GET'])
+def Acceptance():
+    sql1="select * from Request_acceptance"
+    cursor.execute(sql1)
+    product1= cursor.fetchall()
+    return render_template('myaccept.html',Acceptances=product1)
+
+@app.route("/acceDelete", methods=['POST'])
+def accedelete():
+    raid = request.form.get('raid')
+    if raid:
+        sql = "DELETE FROM Request_acceptance WHERE raid = %s"
+        cursor.execute(sql,(int(raid)))
+
+        sql = "select * from Request_acceptance"
+        cursor.execute(sql)
+        accedelete = cursor.fetchall()
+        return render_template('myaccept.html', Acceptances=accedelete)
+
+
