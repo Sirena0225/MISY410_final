@@ -30,7 +30,7 @@
             <th>Address</th>
             <th>Budget</th>
             <th>Reward</th>
-            <th>Action</th>
+            <th>Delivry Time</th>
         </tr>
     </thead>
     <tbody>
@@ -43,9 +43,7 @@
     <td>{{ req['addr'] }}</td>
     <td>{{ req['budg'] }}</td>
     <td>{{ req['rewd'] }}</td>
-        <td><a href="/dataDelete" class="btn btn-danger">Delete</a>
-            <a href="/dataModify" class="btn btn-danger">Modify</a>
-        </td>
+    <td>{{ req['time'] }}</td>
 
 </tr>
 {% endfor %}
