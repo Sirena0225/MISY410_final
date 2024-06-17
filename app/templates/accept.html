@@ -1,0 +1,13 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+
+<h1>Search products</h1>
+<form method="get" action="/acceptSubmit">
+    <div class="mb-3">
+        <label for ="exampleInputSupplierID" class="form-label">Search for orders</label>
+        <input type="text" name="Searchorders" value="{{ Searchorders }}" class="form-control" id="Searchorders">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+<div id="placeholder"></div>
+{% endblock content %}

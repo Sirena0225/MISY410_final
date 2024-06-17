@@ -1,0 +1,35 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<table class="table table-striped" name="searchaccept" id="orders">
+    <thead>
+        <tr>
+            <th>Rid</th>
+            <th>Email</th>
+            <th>RequestTime</th>
+            <th>RequestContent</th>
+            <th>DeliveryTime</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if orders %}
+            {% for order in orders %}
+                <tr>
+                    <form method="post" action="/acceptance">
+                        <td>{{ order['rid'] }}</td>
+                        <td>{{ order['email'] }}</td>
+                        <td>{{ order['RequestTime'] }}</td>
+                        <td>{{ order['RequestContent'] }}</td>
+                        <td>{{ order['DeliveryTime'] }}</td>
+                        <td>
+                            <input type="hidden" name="rid" value="{{ order['rid'] }}">
+                            <input type="hidden" name="email" value="{{ order['email'] }}">
+                            <button type="submit" class="btn btn-primary">Accept</button>
+                        </td>
+                    </form>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+{% endblock content %}
