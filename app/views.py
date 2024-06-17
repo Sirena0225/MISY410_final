@@ -111,8 +111,6 @@ def changepassword():
    
     return render_template('profile2.html')
 
-    
-
 
 @app.route('/completeinfo', methods=['POST'])
 def completeinfo():
@@ -183,21 +181,28 @@ def requestsubmit():
 
 @app.route('/myrequest')
 def myrequest():
-    return render_template('myrequest.html')
+    email = '123@qq.com'# session.get('email')
 
-@app.route('/searchOrders', methods=['GET'])
-def SearchOrders():
-    # get sid send in the get request
-    email = request.args.get('email')
-
-    # retrieve the product records from the database for the given sid
     if email:
         sql = "select * from Request where email = %s"
         cursor.execute( sql, (email))
         requests = cursor.fetchall()
 
+    return render_template('myrequest.html', requests=requests)
+
+@app.route('/searchOrders', methods=['GET'])
+def SearchOrders():
+    # get sid send in the get request
+    rid = request.form['rid']
+
+    # retrieve the product records from the database for the given sid
+    if rid:
+        sql = "select * from Request where rid = %s"
+        cursor.execute( sql, (int(rid)))
+        requests = cursor.fetchall()
+
     # send the product table back
-    return render_template('reqTable.html', requests=requests)
+    return render_template('myrequest.html', requests=requests)
 
 
 
@@ -209,7 +214,7 @@ def data():
 @app.route('/dataRequest')
 def dataRequest():
     # retrieve a list of supplier IDs from the database and pass then to the page
-    sql = "select Address from Requests"
+    sql = "select Address from Request"
     cursor.execute(sql)
     req = cursor.fetchall()
     return render_template('reqdata.html', requests=req)
@@ -222,7 +227,7 @@ def requestGraph():
 
     # get product names and total in-stock values for the products supplied by the selected supplier
     if addr:
-        sql = "select Address as Merchant, count(*) as Total_Orders from Request where Address = %s GROUP BY Address"
+        sql = "select Address as Merchant, count(*) as Total_Orders from Request where Address = %s GROUP BY RequestContent"
         cursor.execute(sql, (addr))
         orders = cursor.fetchall()
         chartData = json.dumps(orders)
