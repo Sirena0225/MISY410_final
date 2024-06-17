@@ -69,6 +69,65 @@ def registersumbit():
     flash('New user added successfully')
     return render_template('login.html')
 
+@app.route('/profile')
+def profile():
+    sql = ''' 
+    SELECT 
+    CASE
+    WHEN age < 16 THEN '<16'
+    WHEN age BETWEEN 16 AND 25 THEN '16~25'
+    WHEN age BETWEEN 26 AND 40 THEN '25~40'
+    ELSE '>40'
+    END AS label,
+    COUNT(*) AS value
+    FROM
+    Userprofile
+    GROUP BY
+    CASE
+    WHEN age < 16 THEN '<16'
+    WHEN age BETWEEN 16 AND 25 THEN '16~25'
+    WHEN age BETWEEN 26 AND 40 THEN '25~40'
+    ELSE '>40'
+    END '''
+    cursor.execute(sql)
+    print(cursor.mogrify(sql))
+    ageinfo = cursor.fetchall()
+    chart_data = json.dumps(ageinfo)
+
+    return render_template('profile2.html', chart_data=chart_data)
+
+@app.route('/changepassword', methods=['POST'])
+def changepassword():
+    newpassword = request.form['newpassword']
+    email = session.get('email')
+    oldpassword = session.get('password')
+    if newpassword == oldpassword:
+        flash('The password is same as the preview one!')
+    if newpassword != oldpassword:
+        sql = 'UPDATE Userprofile SET password=%s WHERE email=%s'
+        print(cursor.mogrify(sql, (newpassword, email)))
+        cursor.execute(sql, (newpassword, email))
+        flash('New password updated successfully')
+   
+    return render_template('profile2.html')
+
+    
+
+
+@app.route('/completeinfo', methods=['POST'])
+def completeinfo():
+    email = session.form['email']
+    address = request.form['address']
+    age = request.form['age']
+    city = request.form['city']
+    country = request.form['country']
+    sql = "UPDATE Userprofile SET address=%s, age=%s, city=%s, country=%s WHERE email=%s"
+    print(cursor.mogrify(sql, (address, age, city, country, email)))
+    cursor.execute(sql, (address, age, city, country, email))
+    flash('Your info is added successfully')
+    
+    return render_template('profile2.html')
+
 
 @app.route('/requestSubmit', methods=['POST'])
 def requestsubmit():
