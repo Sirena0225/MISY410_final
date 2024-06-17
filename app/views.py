@@ -42,8 +42,9 @@ def loginsumbit():
     
     if result:
         session['email'] = email
+        login = True
         flash('Login Success!')
-        return render_template('index.html')
+        return render_template('index.html', login=login)
 
     if error:
         return render_template('login.html', email=email, password=password)
