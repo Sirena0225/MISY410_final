@@ -346,11 +346,12 @@ def payersubmit():
         pid = request.form.get('Payment-ID')
         PaymentMethodpayer = request.form.get('Pay-Method')
         amountpayer = request.form.get('Amount')
+
         sql = "INSERT INTO Payment (rid,pid,PaymentMethodpayer,amountpayer) values(%s, %s, %s, %s)"
         print(cursor.mogrify(sql,(rid,pid,PaymentMethodpayer,amountpayer)))
         cursor.execute(sql, (rid,pid,PaymentMethodpayer,amountpayer))
         flash('New payer added successfully')
-        return render_template('waiting.html',rid=rid,pid=pid,PaymentMethodpayer=PaymentMethodpayer,amountpayer=amountpayer)
+        return render_template('waiting.html', pid=pid, amountpayer=amountpayer)
 
 @app.route('/payee')
 def payee():
@@ -427,23 +428,23 @@ def modify():
 
 @app.route('/modifysubmit', methods=['POST'])
 def modifysubmit():
-
     pid = request.form.get('Payment-ID')
-
     amountpayee = request.form.get('Amount')
-    
+
+    session['amountpayee'] = amountpayee
 
     sql = "UPDATE Payment SET amountpayee = %s  WHERE pid = %s;"
     print(cursor.mogrify(sql,(amountpayee,  pid)))
     cursor.execute(sql, (amountpayee, pid))
-    flash('Modify successfully')
+    flash('Modify successfully, please waiting for Confirmation.')
     
-    return render_template('confirm.html',pid=pid,amountpayee=amountpayee)
+    return render_template('payee-2.html', pid=pid, amountpayee=amountpayee)
 
 @app.route('/confirm')
 def confirm():
-    pid = request.form.get('Payment-ID')
-    return render_template('confirm.html',pid=pid)
+    pid = request.form['pid']
+    amountpayee = session['amountpayee']
+    return render_template('confirm.html', pid=pid, amountpayee=amountpayee)
 
 @app.route('/confirmsubmit', methods=['POST'])
 def confirmsubmit():
@@ -451,31 +452,39 @@ def confirmsubmit():
     PaidTime = datetime.now()
     sql = "select amountpayee from Payment where pid = %s"
     cursor.execute(sql,(pid))
-    row = cursor.fetchone()
-    if row:
-        amountpayee = float(row['amountpayee'])
+    payments = cursor.fetchall()
+    if payments:
+        amountpayee = float(payments['amountpayee'])
         print(cursor.mogrify(sql,(pid)))
 
-    if 'submit' in request.form:
-            return submit(pid, amountpayee, PaidTime)
-    elif 'cancel' in request.form:
-            return cancel(pid)
-    
-    def submit(pid, amountpayee,PaidTime):    
-         
-         sql= "UPDATE Payment SET amountpayee= %s, PaidTime = %s  WHERE pid= %s"
-         print(cursor.mogrify(sql, (amountpayee,PaidTime, pid)))
-         cursor.execute(sql, (amountpayee,PaidTime, pid))
+        sql= "UPDATE Payment SET amountpayee= %s, PaidTime = %s WHERE pid= %s"
+        print(cursor.mogrify(sql, (amountpayee, PaidTime, pid)))
+        flash('Payment submitted successfully!')
+        return render_template('pay-success.html')
+            # return submit(pid, amountpayee, PaidTime)
 
-         flash('Payment submitted successfully!')
-         return render_template('pay-success.html')
-
-    def cancel(pid):
         
-        cursor.execute("DELETE  FROM Payment  WHERE pid = %s")
-  
-        flash('Payment Cancel successfully!')
-        return render_template('confirm.html')
+@app.route('/cancelPayment', methods=['POST'])
+def cancelpayment():
+    pid = request.form['pid']
+    sql = "DELETE FROM Payment WHERE pid = %s"
+    cursor.execute(sql, (pid))
+    flash('Payment Cancel successfully!')
+
+    return render_template('confirm.html')
+    
+    # def submit(pid, amountpayee,PaidTime):    
+    #     PaidTime = datetime.now()
+    #     sql= "UPDATE Payment SET amountpayee= %s, PaidTime = %s WHERE pid= %s"
+    #     print(cursor.mogrify(sql, (amountpayee, PaidTime, pid)))
+    #     flash('Payment submitted successfully!')
+    #     return render_template('pay-success.html')
+
+    # def cancel(pid):
+    #     sql = "DELETE  FROM Payment  WHERE pid = %s"
+    #     cursor.execute(sql, (pid))
+    #     flash('Payment Cancel successfully!')
+    #     return render_template('confirm.html')
 
     
 

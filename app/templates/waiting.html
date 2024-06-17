@@ -1,8 +1,32 @@
 {% extends "layouts/base.html" %}
 {% block content %}
-    <h1>Wait a minute</h1>
-    <form id="contact-form" action="/paysubmit" >
-    <div></div><button class="btn btn-success btn-send" value="Submit" type="submit" style="margin: 0px;">Submit</button>
+    <h1>You have successfully completed a payment!</h1>
+    <h3>Please wait a minute for Confirmation</h3>
+    <form id="contact-form" action="/confirm" >
+        <table>
+            <tr>
+                <td>Payment ID</td>
+                <td>Amount</td>
+            </tr>
+            <tr>
+                <td>{{ pid }}</td>
+                <td>{{ amountpayer }}</td>
+            </tr>
+        </table>
+    <div>
+        <input type="hidden" name="pid" value="{{ pid }}">
+        <button class="btn btn-success btn-send" value="Submit" type="submit" style="margin: 0px;">Go to Confirm</button>
+    </div>
 </form>
 
-    {% endblock content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% endwith %}
+{% endblock content %}
