@@ -1,9 +1,12 @@
 {% extends "layouts/base.html" %}
 {% block content %}
+<div id="contact">
+    <div class="container">
+        <div class="intro">
+        <h1 style="padding-top: 30px;">Confirm the Amount Again</h1>
+        </div>
                         <form id="contact-form" action="/modifysubmit"  method="post">
                             <div class="messages"></div>
-                           
-                            </div>
                             <div class="row">
                                 <div class="col-md-6"><input class="form-control" type="number" id="Payment-ID" data-error="Telefonnummer erforderlich" name="Payment-ID" placeholder="Payment ID">
                                     <div class="form-group mb-3">
@@ -18,33 +21,12 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="form-group mb-3">
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
                                     <p class="text-muted">
                                         <button class="btn btn-success btn-send" value="Submit" type="submit" style="margin: 0px;">Modify the Amount</button>
                                     </p>
-
                                 </div>
                             </div>
                         </form>
-                    </div>
-                </div>
-
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-              <ul>
-                {% for message in messages %}
-                <li>{{message}}</li>
-                {% endfor %}
-              </ul>
-              {% endif %}
-            
-            {% endwith %}
-            
-            </body>
-            </html>
-            
-            {% endblock content %}
+    </div>
+</div>
+{% endblock %}
