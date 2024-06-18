@@ -382,7 +382,7 @@ def payeesubmit():
             sql = "UPDATE Payment SET raid=%s, PaymentMethodpayee=%s, amountpayee=%s ,PaidTime= %s WHERE pid=%s"
             print(cursor.mogrify(sql,(raid,PaymentMethodpayee,amountpayee,PaidTime, pid)))
             cursor.execute(sql, (raid,PaymentMethodpayee,amountpayee,PaidTime, pid))
-            flash('New payer added successfully')
+            flash('Payment successful')
             return render_template('pay-success.html')
         # # ELSE THEN UPDATE
         # sql = "UPDATE Payment SET raid=%s, PaymentMethodpayee=%s, amountpayee=%s WHERE pid=%s"
@@ -432,6 +432,7 @@ def modifysubmit():
     amountpayee = request.form.get('Amount')
 
     session['amountpayee'] = amountpayee
+    session['pid'] = pid
 
     sql = "UPDATE Payment SET amountpayee = %s  WHERE pid = %s;"
     print(cursor.mogrify(sql,(amountpayee,  pid)))
@@ -442,9 +443,14 @@ def modifysubmit():
 
 @app.route('/confirm')
 def confirm():
-    pid = request.form['pid']
+    pid = session['pid']
     amountpayee = session['amountpayee']
-    return render_template('confirm.html', pid=pid, amountpayee=amountpayee)
+    if pid and amountpayee:
+        return render_template('confirm.html', pid=pid, amountpayee=amountpayee)
+    else:
+        flash('Payment successful')
+        return render_template('pay-success.html')
+
 
 @app.route('/confirmsubmit', methods=['POST'])
 def confirmsubmit():
@@ -487,10 +493,7 @@ def cancelpayment():
     #     return render_template('confirm.html')
 @app.route('/dataPayment', methods=['GET'])
 def datapayment():
-    # # retrieve a list of supplier IDs from the database and pass then to the page
-    # sql = "select DISTINCT PaymentMethodpayee from Payment"
-    # cursor.execute(sql)
-    # payer = cursor.fetchall()
+
     return render_template('paymentdata.html')
 
 @app.route('/paymentGraph', methods=['POST'])
