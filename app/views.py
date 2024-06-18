@@ -485,7 +485,35 @@ def cancelpayment():
     #     cursor.execute(sql, (pid))
     #     flash('Payment Cancel successfully!')
     #     return render_template('confirm.html')
+@app.route('/dataPayment', methods=['GET'])
+def datapayment():
+    # # retrieve a list of supplier IDs from the database and pass then to the page
+    # sql = "select DISTINCT PaymentMethodpayee from Payment"
+    # cursor.execute(sql)
+    # payer = cursor.fetchall()
+    return render_template('paymentdata.html')
 
-    
+@app.route('/paymentGraph', methods=['POST'])
+def paymentGraph():
+
+    month = request.form.get('month')
+
+    if month:
+        sql="SELECT pid,amountpayee FROM Payment WHERE MONTH(PaidTime) = %s GROUP BY pid"
+        cursor.execute(sql, (month,))
+        payment=cursor.fetchall()
+        print(payment)
+       
+        if not payment:
+                return "No data found for the specified month", 404
+            
+        # payment_list = [{"amountpayee": row[0], "total_amount": float(row[1])} for row in payment]
+        # print(payment_list)
+
+        return render_template('paymentGraph.html', payment=payment)
+
+        
+    # pass the data to the graph page
+    return render_template('paymentdata.html', payment=payment)   
 
 

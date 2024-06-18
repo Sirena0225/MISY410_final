@@ -1,0 +1,46 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+    <!-- Step 1 - Include the fusioncharts core library -->
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+    <!-- Step 2 - Include the fusion theme -->
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.gammel.js"></script>
+    <script>
+        // Receive Data from views.py
+        var importedData = JSON.parse({{ payment | tojson | safe }});
+        if (importedData.length > 0) {
+            // code copied from FusionChart Example
+            const dataSource = {
+                chart: {
+                    caption: "Total payment",
+                    xaxisname: "pid",
+                    yaxisname: "Amount",
+                    theme: "gammel"
+                },
+                data: importedData
+            };
+
+            FusionCharts.ready(function() {
+                var myChart = new FusionCharts({
+                    type: "column2d",
+                    renderAt: "chart-container",
+
+                    width: "65%",
+                    height: "100%",
+                    dataFormat: "json",
+                    dataSource
+                }).render();
+            });
+        } else {
+            // Handle case when importedData is empty
+            document.getElementById('chart-container').innerHTML = "<p>No data found</p>";
+        }
+
+
+    </script>
+    <div class="text-center p-4 p-lg-5">
+      <div id="chart-container"></div>
+    </div>
+
+
+{% endblock %}
