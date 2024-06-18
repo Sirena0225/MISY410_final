@@ -17,6 +17,11 @@
         <input type="hidden" name="amountpayee" value="{{ amountpayee }}">
         <button type="submit" name="submit">Submit</button>
     </div>
+
+    <div>
+        <input type="hidden" name="pid" value="{{ pid }}">
+        <button type="submit" name="submit">Cancel</button>
+    </div>
 </div>
 {% with messages = get_flashed_messages() %}
 {% if messages %}

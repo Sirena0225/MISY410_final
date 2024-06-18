@@ -1,10 +1,13 @@
 {% extends "layouts/base.html" %}
 {% block content %}
-
-<h1>Search products</h1>
+<div id="contact">
+    <div class="container">
+        <div class="intro">
+            <h2 style="padding-top: 30px;">SEARCH&nbsp; PRODUCTS</h2>
+            <p style="padding-bottom: 0px;margin-bottom: 0px;">Search for orders by REWARDS</p>
+        </div>
 <form method="get" action="/acceptSubmit">
     <div class="mb-3">
-        <label for ="exampleInputorders" class="form-label">Search for orders</label>
             <select name="Searchorders" value="{{ Searchorders }}" class="form-select" id="Searchorders">
                 <option value="1" name="1">1</option>
                 <option value="2" name="2">2</option>
@@ -12,7 +15,13 @@
                 <option value="4" name="1">4</option>
                 <option value="5" name="5">5</option>
             </select>
-        <button type="submit" class="btn btn-primary">Submit</button>
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="text-muted">
+                        <button class="btn btn-success btn-send" value="Submit" type="submit" style="margin: 0px;">Submit</button>
+                    </p>
+                </div>
+            </div>
     </div>
 </form>
 
