@@ -4,10 +4,27 @@
 <h1>Search products</h1>
 <form method="get" action="/acceptSubmit">
     <div class="mb-3">
-        <label for ="exampleInputSupplierID" class="form-label">Search for orders</label>
-        <input type="text" name="Searchorders" value="{{ Searchorders }}" class="form-control" id="Searchorders">
+        <label for ="exampleInputorders" class="form-label">Search for orders</label>
+            <select name="Searchorders" value="{{ Searchorders }}" class="form-select" id="Searchorders">
+                <option value="1" name="1">1</option>
+                <option value="2" name="2">2</option>
+                <option value="3" name="3">3</option>
+                <option value="4" name="1">4</option>
+                <option value="5" name="5">5</option>
+            </select>
         <button type="submit" class="btn btn-primary">Submit</button>
     </div>
 </form>
-<div id="placeholder"></div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% endwith %}
+
 {% endblock content %}

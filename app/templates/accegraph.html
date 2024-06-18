@@ -10,10 +10,9 @@
 
         const dataSource = {
             chart: {
-                caption: " total number of acceptance groups by months ",
-                subcaption: "Units: millon",
+                caption: " total number of acceptances groups by months ",
                 xaxisname: "month",
-                yaxisname: " number of  acceptance",
+                yaxisname: " number of  acceptances",
                 numbersuffix: "K",
                 theme: "gammel"
             },
@@ -24,14 +23,15 @@
             var myChart = new FusionCharts({
                 type: "column2d",
                 renderAt: "chart-container",
-                width: "100%",
+                width: "60%",
                 height: "100%",
                 dataFormat: "json",
                 dataSource
             }).render();
         });
     </script>
-
-    <div id="chart-container"></div>
+    <div class="text-center p-4 p-lg-5">
+        <div id="chart-container"></div>
+    </div>
 
 {% endblock content %}  

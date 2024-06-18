@@ -289,13 +289,19 @@ def searchproducts():
 @app.route("/acceptSubmit",methods=['GET'])
 def acceptSubmit():
     so = request.args.get('Searchorders')
-    if so:
-        sql = "select * from Request where RequestContent = %s"
+    error = False
+    if not so or so=="":
+        error = True
+        flash('Order is required')
+
+    if error:
+        return render_template("accept.html")
+    else:
+        sql = "select * from Request where Reward = %s"
         cursor.execute(sql,(so))
         orders = cursor.fetchall()
         return render_template('searchaccept.html',orders=orders)
-    else:
-        return render_template("accept.html")
+        
 
 @app.route("/acceptance", methods=['POST'])
 def accept():
@@ -328,7 +334,7 @@ def graph():
         cursor.execute(sql2,month)
         product2=cursor.fetchall()
         chart_data2=json.dumps(product2)
-        return render_template('graph.html', acceptances=chart_data2)
+        return render_template('accegraph.html', acceptances=chart_data2)
     else:
         return render_template('graphsearch.html')
 
