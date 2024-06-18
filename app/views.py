@@ -56,6 +56,7 @@ def register():
 
 @app.route('/registersumbit', methods=['POST'])
 def registersumbit():
+    DOC = datetime.now()
     firstname = request.form['first_name']
     lastname = request.form['last_name']
     email = request.form['email']
@@ -66,9 +67,9 @@ def registersumbit():
     session['email'] = email
     session['password'] = password
 
-    sql = "INSERT INTO Userprofile (first_name, last_name, email, password) values(%s, %s, %s, %s)"
-    print(cursor.mogrify(sql,(firstname, lastname, email, password)))
-    cursor.execute(sql, (firstname, lastname, email, password))
+    sql = "INSERT INTO Userprofile (first_name, last_name, email, password, DOC) values(%s, %s, %s, %s, %s)"
+    print(cursor.mogrify(sql,(firstname, lastname, email, password, DOC)))
+    cursor.execute(sql, (firstname, lastname, email, password, DOC))
     flash('New user added successfully')
     return render_template('login.html')
 
@@ -187,7 +188,14 @@ def deleteinfo():
     return render_template('profile2.html')
 
 
-
+@app.route('/cancelaccount', methods=['POST'])
+def cancelaccount():
+    email = session.get('email')
+    sql='''DELETE FROM Userprofile WHERE email=%s'''
+    print(cursor.mogrify(sql, email))
+    cursor.execute(sql, email)
+    flash('Cancel your account successfully')
+    return render_template('profile2.html')
     
 
 
