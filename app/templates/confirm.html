@@ -17,15 +17,7 @@
         <input type="hidden" name="amountpayee" value="{{ amountpayee }}">
         <button type="submit" name="submit">Submit</button>
     </div>
-</form>
-<br>
-<form method="post" action="/cancelPayment">
-    <div>
-        <input type="hidden" name="pid" value="{{ pid }}">
-        <button type="submit" name="cancel">Cancel</button>
-    </div>
-</form>
-
+</div>
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 <ul>
