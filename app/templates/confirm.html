@@ -12,7 +12,7 @@
                             <div class="form-group mb-3">
                                 <div class="help-block with-errors"></div>
                                 <label for="Payment-ID">Payment ID:</label></td>
-            <td>{{ pid }}</td>
+                                <td>{{ pid }}</td>
         </tr>
         <tr>
             <td>
@@ -23,7 +23,7 @@
                             <div class="form-group mb-3">
                                 <div class="help-block with-errors"></div>
                                 <label for="Amount">Amount:</label></td>
-            <td>{{ amountpayee }}</td>
+                                <td>{{ amountpayee }}</td>
         </tr>
     </table>
     <div class="row">
@@ -36,9 +36,18 @@
     <div>
         <input type="hidden" name="pid" value="{{ pid }}">
         <input type="hidden" name="amountpayee" value="{{ amountpayee }}">
-        <button type="submit" name="submit style="margin: 0px;"">Submit</button>
+        <button type="submit" name="submit" style="margin: 0px;">Submit</button>
     </div>
 </div>
+</form>
+
+<form method="post" action="/cancelPayment">
+    <div>
+        <input type="hidden" name="pid" value="{{ pid }}">
+        <button type="submit" name="submit" style="margin: 0px;">Cancel</button>
+    </div>
+</form>
+
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 <ul>
