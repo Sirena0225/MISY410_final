@@ -350,12 +350,15 @@ def accept():
     else:
         return render_template('searchaccept.html')
 
+
 @app.route("/Acceptance",methods=['GET'])
 def Acceptance():
     sql1="select * from Request_acceptance"
     cursor.execute(sql1)
     product1= cursor.fetchall()
     return render_template('myaccept.html',Acceptances=product1)
+
+
 @app.route("/acceDelete", methods=['POST'])
 def accedelete():
     raid = request.form.get('raid')
@@ -368,6 +371,24 @@ def accedelete():
         return render_template('myaccept.html', Acceptances=accedelete)
 
 
+@app.route("/graphsearch", methods=['GET'])
+def graphsearch():
+    return render_template('graphsearch.html')
+
+
+@app.route('/graph', methods=['POST'])
+def graph():
+    month = request.form.get("month")
+    if month:
+        sql2 = "select MONTH(AcceptanceTime) AS label, COUNT(*) AS value FROM Request_acceptance where MONTH(AcceptanceTime) = %s GROUP BY MONTH(AcceptanceTime)"
+        cursor.execute(sql2,month)
+        product2 = cursor.fetchall()
+        chart_data2 = json.dumps(product2)
+        return render_template('accegraph.html', acceptances=chart_data2)
+    else:
+        return render_template('graphsearch.html')
+
+
 @app.route('/payer')
 def payer():
     return render_template('payer-1.html')
@@ -378,16 +399,6 @@ def payersubmit():
         pid = request.form.get('Payment-ID')
         PaymentMethodpayer = request.form.get('Pay-Method')
         amountpayer = request.form.get('Amount')
-
-@app.route('/graph',methods=['POST'])
-def graph():
-    month = request.form.get("month")
-    if month:
-        sql2="select MONTH(AcceptanceTime) AS label,COUNT(*) AS value FROM Request_acceptance where MONTH(AcceptanceTime) = %s GROUP BY MONTH(AcceptanceTime)"
-        cursor.execute(sql2,month)
-        product2=cursor.fetchall()
-        chart_data2=json.dumps(product2)
-        return render_template('accegraph.html', acceptances=chart_data2)
         sql = "INSERT INTO Payment (rid,pid,PaymentMethodpayer,amountpayer) values(%s, %s, %s, %s)"
         print(cursor.mogrify(sql,(rid,pid,PaymentMethodpayer,amountpayer)))
         cursor.execute(sql, (rid,pid,PaymentMethodpayer,amountpayer))
