@@ -7,7 +7,7 @@
     <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.gammel.js"></script>
     <script>
         // Receive Data from views.py
-        var importedData = JSON.parse({{ payment | tojson | safe }});
+        var importedData = JSON.parse({{ chart_data | tojson | safe }});
         if (importedData.length > 0) {
             // code copied from FusionChart Example
             const dataSource = {

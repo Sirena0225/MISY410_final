@@ -390,6 +390,8 @@ def payeesubmit():
         # cursor.execute(sql, (raid,PaymentMethodpayee,amountpayee,pid))
         # flash('New payer added successfully')
         else:
+            sql = "UPDATE Payment SET raid=%s, PaymentMethodpayee=%s, amountpayee=%s ,PaidTime= %s WHERE pid=%s"
+            cursor.execute(sql, (raid,PaymentMethodpayee,amountpayee,PaidTime, pid))
             return render_template('payee-2.html',raid=raid,pid=pid,PaymentMethodpayee=PaymentMethodpayee,amountpayee=amountpayee)
 
 # @app.route('/waiting')
@@ -454,20 +456,13 @@ def confirm():
 
 @app.route('/confirmsubmit', methods=['POST'])
 def confirmsubmit():
-    pid = request.form.get('Payment-ID')
-    PaidTime = datetime.now()
-    sql = "select amountpayee from Payment where pid = %s"
-    cursor.execute(sql,(pid))
-    payments = cursor.fetchall()
-    if payments:
-        amountpayee = float(payments['amountpayee'])
-        print(cursor.mogrify(sql,(pid)))
+    pid = request.form.get('pid')
+    amountpayee = request.form['amountpayee']
+    sql2= "UPDATE Payment SET amountpayee= %s WHERE pid= %s"
+    cursor.execute(sql2, (amountpayee, pid))
 
-        sql= "UPDATE Payment SET amountpayee= %s, PaidTime = %s WHERE pid= %s"
-        print(cursor.mogrify(sql, (amountpayee, PaidTime, pid)))
-        flash('Payment submitted successfully!')
-        return render_template('pay-success.html')
-            # return submit(pid, amountpayee, PaidTime)
+    return render_template('pay-success.html')
+
 
         
 @app.route('/cancelPayment', methods=['POST'])
@@ -502,21 +497,13 @@ def paymentGraph():
     month = request.form.get('month')
 
     if month:
-        sql="SELECT pid,amountpayee FROM Payment WHERE MONTH(PaidTime) = %s GROUP BY pid"
-        cursor.execute(sql, (month,))
+        sql="select MONTH(PaidTime)  as label , SUM(amountpayee) as value from Payment WHERE MONTH(PaidTime) = %s GROUP BY MONTH(PaidTime)"
+        cursor.execute(sql, (month))
         payment=cursor.fetchall()
-        print(payment)
-       
-        if not payment:
-                return "No data found for the specified month", 404
-            
-        # payment_list = [{"amountpayee": row[0], "total_amount": float(row[1])} for row in payment]
-        # print(payment_list)
-
-        return render_template('paymentGraph.html', payment=payment)
-
-        
+        chart_dat = json.dumps(payment)
+        return render_template('paymentGraph.html', chart_data=chart_dat)   
     # pass the data to the graph page
-    return render_template('paymentdata.html', payment=payment)   
+    else:
+        return render_template('paymentdata.html', payment=payment)   
 
 
