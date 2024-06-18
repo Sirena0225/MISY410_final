@@ -1,10 +1,8 @@
 {% extends "layouts/base.html" %}
 {% block content %}
-<div id="contact">
-    <div class="container">
         <div class="intro">
             <h1 style="padding-top: 30px;">You have successfully completed a payment!</h1>
-            <h3 style="padding-bottom: 0px;margin-bottom: 0px;">Please wait a minute for Confirmation</h3>
+            <p style="padding-bottom: 0px;margin-bottom: 0px;">Please wait a minute for Confirmation</p>
         </div>
     <form id="contact-form" action="/confirm" >
         <table>
@@ -22,6 +20,5 @@
         <button class="btn btn-success btn-send" value="Submit" type="submit" style="margin: 0px;">Go to Confirm</button>
     </div>
 </form>
-</div>
-</div>
+
 {% endblock %}

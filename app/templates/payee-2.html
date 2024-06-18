@@ -1,9 +1,7 @@
 {% extends "layouts/base.html" %}
 {% block content %}
-<div id="contact">
-    <div class="container">
         <div class="intro">
-            <h1 style="padding-top: 30px;">Confirm the Amount Again</h1>
+            <h1 style="padding-top: 30px;">Confirm the&nbsp; Amount Again</h1>
         </div>
                         <form id="contact-form" action="/modifysubmit"  method="post">
                             <div class="messages"></div>
@@ -27,8 +25,6 @@
                                 </div>
                             </div>
                         </form>
-    </div>
-</div>
 
 {% with messages = get_flashed_messages() %}
 {% if messages %}
