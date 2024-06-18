@@ -501,7 +501,7 @@ def paymentGraph():
         cursor.execute(sql, (month))
         payment=cursor.fetchall()
         chart_dat = json.dumps(payment)
-        return render_template('paymentGraph.html', chart_data=chart_dat)   
+        return render_template('paymentGraph.html', chart_data=chart_dat, month=month)   
     # pass the data to the graph page
     else:
         return render_template('paymentdata.html', payment=payment)   
