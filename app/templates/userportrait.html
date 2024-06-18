@@ -39,6 +39,17 @@ theme: "gammel"
 data: importData 
 };
 
+const dataSourceGenderColumn = {
+chart: {
+caption: "Gender Distribution Bar Chart",
+subcaption: "",
+xaxisname: "Gender",
+yaxisname: "Total Number of Users",
+theme: "gammel"
+},
+data: GenderData
+};
+
 const dataSourceGenderPie = {
 chart: {
 caption: "Gender Distribution Proportion",
@@ -62,6 +73,14 @@ dataFormat: "json",
 dataSource: dataSourceColumn
 }).render();
 
+new FusionCharts({
+type: "column2d",
+renderAt: "chart-container-gender",
+width: "100%",
+height: "500", 
+dataFormat: "json",
+dataSource: dataSourceGenderColumn
+}).render();
 
 new FusionCharts({
 type: "pie3d",
@@ -93,6 +112,7 @@ dataSource: dataSourceGenderPie
 </div>
 <div id="chart-container"></div>
 <div id="chart-container-pie"></div>
+<div id="chart-container-gender"></div>
 <div id="chart-container-genderpie"></div>
 
 

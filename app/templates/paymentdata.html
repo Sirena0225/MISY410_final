@@ -1,0 +1,31 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h2 style="width: 343px;">Payment Data</h2>
+            </div>
+            <form  method="post" action="/paymentGraph">
+                <label for="text">Select the month: </label>
+                <select name="month" class="form-select">
+                    <option value="1" name="1">1</option>
+                    <option value="2" name="2">2</option>
+                    <option value="3" name="3">3</option>
+                    <option value="4" name="4">4</option>
+                    <option value="5" name="5">5</option>
+                    <option value="6" name="6">6</option>
+                </select>
+                <br>
+                <br>
+                <input type="submit" value="Submit" class="btn btn-primary fs-5 me-2 py-2 px-4">
+            </form>
+            <br>
+            <div id="placeholder"></div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
