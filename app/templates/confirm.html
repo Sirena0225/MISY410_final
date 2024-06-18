@@ -1,0 +1,33 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<h1>Confirm Your Payment</h1>
+<form method="post" action="/confirmsubmit">
+    <table>
+        <tr>
+            <td><label for="Payment-ID">Payment ID:</label></td>
+            <td>{{ pid }}</td>
+        </tr>
+        <tr>
+            <td><label for="Amount">Amount:</label></td>
+            <td>{{ amountpayee }}</td>
+        </tr>
+    </table>
+    <div>
+        <input type="hidden" name="pid" value="{{ pid }}">
+        <input type="hidden" name="amountpayee" value="{{ amountpayee }}">
+        <button type="submit" name="submit">Submit</button>
+    </div>
+</div>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% endwith %}
+{% endblock content %}
+</body>
+</html>
