@@ -538,6 +538,50 @@ def cancelpayment():
     #     cursor.execute(sql, (pid))
     #     flash('Payment Cancel successfully!')
     #     return render_template('confirm.html')
+
+@app.route('/searchpayment')
+def searchpayment():
+    return render_template('paymenttable.html')
+
+@app.route('/searchpaymentsubmit', methods=['post'])
+def submit():
+    if request.method == 'POST':
+        pid = request.form.get('pid')
+        
+        if pid:
+            sql = "select rid,raid,PaymentMethodpayee,PaymentMethodpayer,amountpayee,amountpayer,PaidTime from Payment where pid = %s "
+
+            cursor.execute(sql,( pid,))
+            payment = cursor.fetchone()
+            print(payment)
+            
+            if payment:
+                session['rid'] = payment['rid']
+                session['raid'] = payment['raid']
+                session['PaymentMethodpayee'] = payment['PaymentMethodpayee']
+                session['PaymentMethodpayer'] = payment['PaymentMethodpayer']
+                session['amountpayee'] = payment['amountpayee']
+                session['amountpayer'] = payment['amountpayer']
+                session['PaidTime'] = payment['PaidTime']
+       
+            
+            amountpayee = session['amountpayee']
+            rid = session['rid']
+            raid = session['raid']
+            PaymentMethodpayee = session['PaymentMethodpayee']
+            PaymentMethodpayer = session['PaymentMethodpayer']
+            amountpayer = session['amountpayer']
+         
+            PaidTime = session['PaidTime']
+
+           
+            return render_template('searchpayment.html',rid=rid,raid=raid,PaymentMethodpayee=PaymentMethodpayee,PaymentMethodpayer=PaymentMethodpayer,amountpayee=amountpayee,amountpayer=amountpayer,PaidTime=PaidTime, pid=pid)
+
+
+   
+    return render_template('paymenttable.html')
+
+
 @app.route('/dataPayment', methods=['GET'])
 def datapayment():
 

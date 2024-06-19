@@ -1,0 +1,34 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+
+<table class="table table-striped" name="searchaccept" id="orders">
+    <thead>
+        <tr>
+            <th>pid</th>
+            <th>rid</th>
+            <th>raid</th>
+            <th>PayMethodpayer</th>
+            <th>PayMethodpayee</th>
+            <th>PaidTime</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+
+                <tr>
+                    <form>
+                        <td>{{ pid}}</td>
+                        <td>{{ rid}}</td>
+                        <td>{{ raid}}</td>
+                        <td>{{ PaymentMethodpayer}}</td>
+                        <td>{{ PaymentMethodpayee}}</td>
+                        <td>{{ PaidTime }}</td>
+                        <td>{{ amountpayee }}</td>
+                        <td>
+                           
+                        </td>
+                    </form>
+                </tr>
+    </tbody>
+</table>
+{% endblock content %}
